@@ -1,0 +1,43 @@
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String @unique
+  password String
+  role     String @default("user")
+  issues   Issue[]
+  comments Comment[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  token    String @unique
+}
+
+model Issue {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  status      String @default("open") // open, in-progress, closed
+  authorId    String @db.ObjectId
+  author      User     @relation(fields: [authorId], references: [id])
+  comments    Comment[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
+
+model Comment {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  text     String
+  issueId  String @db.ObjectId
+  issue    Issue @relation(fields: [issueId], references: [id])
+  authorId String @db.ObjectId
+  author   User  @relation(fields: [authorId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
