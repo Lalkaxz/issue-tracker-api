@@ -39,6 +39,16 @@ export class AuthService {
     return { token: token }
   }
 
+  async login(userDto: CreateUserDto): Promise<TokenResponseDto> {
+    const token = await this.validateUser(userDto);
+    if (!token) {
+      throw new InternalServerErrorException();
+    }
+
+    return { token: token };
+  }
+
+
   // Generate token from request body.
   private async generateToken(user: CreateUserDto): Promise<string> {
     const payload = { sub: user.name, iat: Date.now() }
@@ -56,7 +66,7 @@ export class AuthService {
   }
   
   // Validate user. Find user by name and compare passwords.
-  private async validateUser(userDto: CreateUserDto) {
+  private async validateUser(userDto: CreateUserDto): Promise<string> {
     const user = await this.usersService.findUserByName(userDto.name);
     // If user with this name not found.
     if (!user) {
@@ -69,7 +79,7 @@ export class AuthService {
       throw new UnauthorizedException("Incorrect name or password.");
     }
 
-    return user;
+    return user.token;
   }
 
 }
