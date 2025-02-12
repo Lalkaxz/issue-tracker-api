@@ -1,7 +1,7 @@
-import { Comment } from "src/issues/comments/entities/comment.entity";
-import { Issue } from "src/issues/entities/issue.entity";
+import { Issue, Comment } from "@prisma/client";
 
-export class User {
+
+export class UserEntity {
     readonly id: string;
     readonly name: string;
     readonly password: string;

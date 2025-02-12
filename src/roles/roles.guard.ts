@@ -1,8 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext, InternalServerErrorException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Roles, ROLES_KEY } from './roles.decorator';
-import { User } from 'src/users/entities/user.entity';
+import { ROLES_KEY } from './roles.decorator';
+import { UserEntity } from 'src/users/entities/user.entity';
 import { Role } from './enums/role.enum';
+import { Request } from 'express';
 
 /** Guard to check role permission for route call. */
 @Injectable()
@@ -16,8 +17,8 @@ export class RolesGuard implements CanActivate {
             return true;
         }
         // Get user roles from request.
-        const request = context.switchToHttp().getRequest();
-        const user: User = request.user;
+        const request = context.switchToHttp().getRequest<Request>();
+        const user: UserEntity = request.user;
         if (!user) {
             throw new InternalServerErrorException();
         }
