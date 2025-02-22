@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Comment, Issue } from "@prisma/client";
 import { IsNotEmpty, IsString, IsArray } from "class-validator";
 
-export class UserProfile {
+export class UserProfileDto {
     @ApiProperty({
         type: String,
         description: "Unique id"
@@ -28,12 +29,20 @@ export class UserProfile {
     readonly roles: string[]
 
     @ApiProperty({
-        type: [String],
+        // type: [String],
+        default: [],
         description: "User comments"
     })
     @IsArray()
-    @IsString({ each: true })
-    @IsNotEmpty()
-    readonly comments: string[]
+    readonly comments: Comment[]
+
+    @ApiProperty({
+        // type: [String],
+        default: [],
+        description: "User issues"
+    })
+    @IsArray()
+    readonly issues: Issue[]
+
 
 }

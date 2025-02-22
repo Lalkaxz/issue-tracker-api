@@ -5,11 +5,31 @@ export class BadRequestErrorResponseDto {
   @ApiProperty({ example: 400 })
   readonly statusCode: number;
 
-  @ApiProperty({ example: "User already registered" })
+  @ApiProperty({ example: "message" })
   readonly message: string;
 
   @ApiProperty({ example: "Bad Request" })
   readonly error: string;
+}
+
+export class ForbiddenResponseDto {
+  @ApiProperty({ example: 403 })
+  readonly statusCode: number;
+
+  @ApiProperty({ example: "Forbidden resource" })
+  readonly message: string;
+
+  @ApiProperty({ example: "Forbidden" })
+  readonly error: string;
+}
+
+export class UnauthorizdResponseDto {
+  @ApiProperty({ example: 401 })
+  readonly statusCode: number;
+
+  @ApiProperty({ example: "Unauthorized" })
+  readonly message: string;
+
 }
 
 export class ErrorResponseDto {
@@ -25,7 +45,7 @@ export class InternalServerErrorResponseDto {
   @ApiProperty({ example: 500 })
   readonly statusCode: number;
 
-  @ApiProperty({ example: "Internal server error" })
+  @ApiProperty({ example: "message" })
   readonly message: string;
 
   @ApiProperty({ example: "Internal Server Error" })

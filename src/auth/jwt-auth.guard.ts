@@ -29,6 +29,12 @@ export class JwtAuthGuard implements CanActivate {
             if (!user) {
                 throw new UnauthorizedException("User is unauthorized");
             }
+
+            // Check if token from header not current user JWT-token.
+            if (token !== user.token) {
+                throw new UnauthorizedException();
+            }
+
             request.user = user;
 
         } catch {

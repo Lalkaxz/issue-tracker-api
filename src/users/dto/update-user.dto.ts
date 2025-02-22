@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class CreateUserDto {
+export class UpdateUserDto {
     @ApiProperty({
         type: String,
         description: "User name",
@@ -13,10 +13,10 @@ export class CreateUserDto {
 
     @ApiProperty({
         type: String,
-        description: "Hash of password",
-        example: "John23781"
+        description: "New token",
+        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     })
     @IsString()
     @IsNotEmpty()
-    readonly password: string;
+    readonly token: string;
 }

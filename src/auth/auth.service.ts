@@ -5,6 +5,8 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs'
 import { UserDbDto } from 'src/users/dto/user-db.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 const SALT_LENGTH = 5;
 
@@ -22,7 +24,7 @@ export class AuthService {
     }
 
     const hashedPassword = await this.hashPassword(userDto.password);
-    const token = await this.generateToken(userDto);
+    const token = await this.generateToken(userDto.name);
 
     // Dto for create user in database.
     const userDbDto: UserDbDto = {
@@ -40,18 +42,29 @@ export class AuthService {
   }
 
   async login(userDto: CreateUserDto): Promise<TokenResponseDto> {
-    const token = await this.validateUser(userDto);
-    if (!token) {
+    const user = await this.validateUser(userDto);
+    return { token: user.token };
+  }
+
+  async refresh(passwordDto: RefreshTokenDto,
+                user: UserEntity): Promise<TokenResponseDto> {
+
+    this.validatePassword(passwordDto.password, user);
+
+    const newToken = await this.generateToken(user.name);
+
+    const userData = await this.usersService.updateUserToken({name: user.name, token: newToken});
+    if (!userData) {
       throw new InternalServerErrorException();
     }
 
-    return { token: token };
+    return { token: userData.token }
   }
 
 
   // Generate token from request body.
-  private async generateToken(user: CreateUserDto): Promise<string> {
-    const payload = { sub: user.name, iat: Date.now() }
+  private async generateToken(userName: string): Promise<string> {
+    const payload = { sub: userName, iat: Date.now() }
     try {
       return await this.jwtService.signAsync(payload);
     } catch {
@@ -66,20 +79,30 @@ export class AuthService {
   }
   
   // Validate user. Find user by name and compare passwords.
-  private async validateUser(userDto: CreateUserDto): Promise<string> {
+  private async validateUser(userDto: CreateUserDto): Promise<UserEntity> {
     const user = await this.usersService.findUserByName(userDto.name);
     // If user with this name not found.
     if (!user) {
-      throw new UnauthorizedException("Incorrect name or password.");
+      throw new UnauthorizedException("Incorrect name or password");
     }
 
     const passwordsEquals = await bcrypt.compare(userDto.password, user.password);
     // If the database password and the request body do not match
     if (!passwordsEquals) {
-      throw new UnauthorizedException("Incorrect name or password.");
+      throw new UnauthorizedException("Incorrect name or password");
     }
 
-    return user.token;
+    return user;
+  }
+
+  private async validatePassword(password: string, user: UserEntity): Promise<boolean> {
+    const passwordsEquals = await bcrypt.compare(password, user.password);
+    // If the database password and the request body do not match
+    if (!passwordsEquals) {
+      throw new BadRequestException("Incorrect password");
+    }
+    
+    return passwordsEquals;
   }
 
 }

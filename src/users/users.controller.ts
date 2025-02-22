@@ -7,6 +7,9 @@ import { Role } from 'src/roles/enums/role.enum';
 import { Request } from 'express';
 import { User } from './user.decorator';
 import { UserEntity } from './entities/user.entity';
+import { UserProfileDto } from './dto/user-profile.dto';
+import { ApiOperation, ApiOkResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiForbiddenResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { BadRequestErrorResponseDto, InternalServerErrorResponseDto, UnauthorizdResponseDto } from 'src/exceptions/dto/error-response.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles([Role.User])
@@ -14,6 +17,11 @@ import { UserEntity } from './entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: "Return current user profile"})
+  @ApiOkResponse({ type: UserProfileDto, description: "Return user profile" })
+  @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
+  @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
+  @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
   @Get("/me")
   aboutMe(@User() user: UserEntity) {
     return this.usersService.getUserProfile(user.name)
