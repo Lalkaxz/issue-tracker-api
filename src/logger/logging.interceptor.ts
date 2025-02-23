@@ -9,36 +9,26 @@ export class LoggingInterceptor implements NestInterceptor {
   constructor(private readonly logger: PinoLogger) {}    
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const http = context.switchToHttp();
+    // Get response and request from execution context.
+    const ctx = context.switchToHttp();
+    const req = ctx.getRequest<Request>();
+    const res = ctx.getResponse<Response>();
 
-    const req = http.getRequest<Request>();
-    const res = http.getResponse<Response>();
-
+    // Get all values for logging.
     const {method, url, ip} = req;
     const start = Date.now();
-
     const pid = process.pid;
 
     return next
       .handle()
       .pipe(
-        catchError((err) => {
-          // WIP
-          const statusCode = res.statusCode;
-          const duration  = Date.now() - start;
-
-          this.logger.error(
-            `[Nest] ${pid}     LOG ${ip} {${method} ${url}} ${statusCode} +${duration}ms`
-          )
-          return throwError(() => err)
-        }),
-
         tap(() => {
+          // Log only responses without exceptions.
           const statusCode = res.statusCode;
           const duration  = Date.now() - start;
 
           this.logger.info(
-            `[Nest] ${pid}     LOG ${ip} {${method} ${url}} ${statusCode} +${duration}ms`
+            `[Nest] ${pid}     LOG ${ip} {${url}, ${method}} ${statusCode} +${duration}ms`
           )
         }),
       );

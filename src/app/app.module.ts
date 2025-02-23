@@ -11,6 +11,7 @@ import configuration from 'src/config/configuration';
 import validation from 'src/config/validation';
 import { LoggerModule } from 'nestjs-pino';
 import httpConfiguration from 'src/logger/logger.config';
+import { exceptionFilter } from 'src/exceptions/http-exception.filter';
 
 
 @Module({
@@ -36,6 +37,9 @@ import httpConfiguration from 'src/logger/logger.config';
     })
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    exceptionFilter
+  ],
 })
 export class AppModule {}

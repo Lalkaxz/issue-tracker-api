@@ -52,3 +52,13 @@ export class InternalServerErrorResponseDto {
   readonly error: string;
 }
 
+export class NotFoundResponseDto {
+  @ApiProperty({ example: 404 })
+  readonly statusCode: number;
+
+  @ApiProperty({ example: "message" })
+  readonly message: string;
+
+  @ApiProperty({ example: "Not Found" })
+  readonly error: string;
+}

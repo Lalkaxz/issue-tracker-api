@@ -1,15 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class IssuesService {
-  create(createIssueDto: CreateIssueDto) {
-    return 'This action adds a new issue';
+  constructor(private readonly prismaService: PrismaService) {}
+ 
+  async create(issueDto: CreateIssueDto, user: UserEntity) {
+    const issue = await this.prismaService.issue.create({data: {
+      title: issueDto.title,
+      description: issueDto.description,
+      status: issueDto.status,
+      authorId: user.id,
+    }});
+
+    return issue;
   }
 
-  findAll() {
-    return `This action returns all issues`;
+  async findAll() {
+    const issues = await this.prismaService.issue.findMany();
+    return issues;
   }
 
   findOne(id: number) {

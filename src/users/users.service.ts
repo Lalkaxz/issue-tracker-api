@@ -21,7 +21,7 @@ export class UsersService {
     return user;
   }
 
-
+  // Update user token in database document.
   async updateUserToken(user: UpdateUserDto): Promise<User | null> {
     const userData = await this.prismaService.user.update({
       where: {name: user.name},
@@ -30,7 +30,7 @@ export class UsersService {
     return userData;
   }
   
-
+  // Find user document in database and return user profile.
   async getUserProfile(name: string): Promise<UserProfileDto> {
     const profile = await this.prismaService.user.findFirst({
       where: {name},
@@ -49,7 +49,6 @@ export class UsersService {
     if (!profile) {
       throw new NotFoundException("User not found");
     }
-
     return profile;
   }
 
