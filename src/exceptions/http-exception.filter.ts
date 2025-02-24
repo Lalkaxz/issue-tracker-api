@@ -23,7 +23,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter  {
 
     this.logger.error(
         `[Nest] ${pid}     LOG ${ip} {${url}, ${method}} ${statusCode} - ${message}`
-      )
+    )
     
     // Hide error message in internal server exceptions.
     if (statusCode === HttpStatus.INTERNAL_SERVER_ERROR) {

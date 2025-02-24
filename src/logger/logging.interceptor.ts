@@ -22,6 +22,20 @@ export class LoggingInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
+        catchError((err) => {
+          // Ignore http exceptions (its handled by filter).
+          if (err instanceof HttpException) {
+            return throwError(() => err);
+          }
+          // Log responses with errors.
+          const statusCode = res.statusCode;
+
+          this.logger.error(
+            `[Nest] ${pid}     LOG ${ip} {${url}, ${method}} ${statusCode}`
+          );
+          
+          return throwError(() => err);
+        }),
         tap(() => {
           // Log only responses without exceptions.
           const statusCode = res.statusCode;
