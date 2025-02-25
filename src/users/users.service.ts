@@ -19,6 +19,20 @@ export class UsersService {
   async findUserByName(name: string): Promise<User | null> {
     return await this.prismaService.user.findFirst({ where: {name} });
   }
+  
+  // TODO:
+  async getAllUsers() {
+    const selectOptions: Prisma.UserSelect = {
+      id: true,
+      name: true,
+      roles: true,
+      createdAt: true
+    }
+
+    return await this.prismaService.user.findMany({
+      select: selectOptions,
+    })
+  }
 
   // Update user token in database document.
   async updateUserToken(user: UpdateUserDto): Promise<User | null> {
@@ -34,7 +48,8 @@ export class UsersService {
     const selectOptions: Prisma.UserSelect = {
       id: true,
       name: true,
-      roles: true
+      roles: true,
+      createdAt: true
     }
 
     expand?.forEach((value) => selectOptions[value] = true);
