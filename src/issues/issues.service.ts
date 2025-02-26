@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
@@ -14,27 +14,78 @@ export class IssuesService {
       title: issueDto.title,
       description: issueDto.description,
       status: issueDto.status,
-      authorId: user.id,
+      authorName: user.name,
     }});
 
     return issue;
   }
 
-  async findAll(): Promise<Issue[]> {
-    const issues = await this.prismaService.issue.findMany();
+  async findAll(limit?: number): Promise<Issue[]> {
+    const issues = await this.prismaService.issue.findMany({ take: limit });
     return issues;
   }
 
   async findOne(id: string): Promise<Issue | null> { 
-    const issue = await this.prismaService.issue.findFirst({where: {id}});
+    const issue = await this.prismaService.issue.findFirst({
+      where: {id},
+      include: {
+        comments: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            roles: true,
+            createdAt: true
+          }
+        }
+      }
+    });
+    if (!issue) {
+      throw new NotFoundException('Issue not found');
+    }
     return issue;
   }
 
-  update(id: number, updateIssueDto: UpdateIssueDto) {
-    return `This action updates a #${id} issue`;
+  async update(id: string,
+               user: UserEntity,
+               updateIssueDto: UpdateIssueDto
+    ): Promise<Issue> {
+
+    const issue = await this.prismaService.issue.findFirst({where: {id: id}});
+    if (!issue) {
+      throw new BadRequestException('Issue not found');
+    }
+
+    if (user.name !== issue.authorName) {
+      throw new ForbiddenException('Only author can delete issue')
+    }
+
+    const updatedIssue = this.prismaService.issue.update({
+      where: {
+        id: id
+      },
+      data: updateIssueDto
+    });
+    return updatedIssue;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} issue`;
+  async delete(id: string, user: UserEntity) {
+    
+    const issue = await this.prismaService.issue.findFirst({where: {id: id}});
+    if (!issue) {
+      throw new BadRequestException('Issue not found');
+    }
+
+    if (user.name !== issue.authorName) {
+      throw new ForbiddenException('Only author can delete issue')
+    }
+
+    await this.prismaService.issue.delete({
+      where: {
+        id: id
+      }
+    })
+    return { message: 'Issue deleted successfully' };
+    
   }
 }

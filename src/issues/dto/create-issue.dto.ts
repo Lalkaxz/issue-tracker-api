@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNotEmpty, Max, Min, IsIn, IsOptional, Length } from "class-validator";
+import { IsString, IsNotEmpty, IsIn, IsOptional, Length } from "class-validator";
 
 export class CreateIssueDto {
     @ApiProperty({
@@ -15,8 +15,7 @@ export class CreateIssueDto {
     @ApiProperty({
         type: String,
         description: "Issue description, min 10 symbols, max 350 symbols.",
-        example: `The creation date of comments is displayed incorrectly.
-        Instead of showing the actual timestamp, it sometimes appears as 'Invalid Date'.`
+        example: `The creation date of comments is displayed incorrectly. Instead of showing the actual timestamp, it sometimes appears as 'Invalid Date'.`
     })
     @IsNotEmpty()
     @IsString()
@@ -26,7 +25,7 @@ export class CreateIssueDto {
     @ApiProperty({
         type: String,
         description: "Issue status.",
-        example: `'open', 'in-progress', 'closed'`
+        example: `'open' or 'in-progress' or 'closed'`
     })
     @IsString()
     @IsOptional()

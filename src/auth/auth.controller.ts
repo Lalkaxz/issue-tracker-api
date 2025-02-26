@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Param, Delete, HttpStatus, InternalServerErrorException, HttpCode, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TokenResponseDto } from './dto/token-response.dto';
-import { BadRequestErrorResponseDto, InternalServerErrorResponseDto  } from 'src/exceptions/dto/error-response.dto';
+import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto  } from 'src/exceptions/dto/error-response.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { User } from 'src/users/users.decorator';
@@ -41,6 +41,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Refresh and return new user token" })
   @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
+  @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiBody({ type: RefreshTokenDto })
   @HttpCode(200)

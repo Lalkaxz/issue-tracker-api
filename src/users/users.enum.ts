@@ -1,6 +1,6 @@
 export enum Expand {
-  Issues = 'issues',
-  Comments = 'comments'
+  ISSUES = 'issues',
+  COMMENTS = 'comments'
 }
 
 export enum UserOrderFields {

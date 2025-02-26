@@ -8,8 +8,8 @@ import { Request } from 'express';
 import { User } from './users.decorator';
 import { UserEntity } from './entities/user.entity';
 import { UserProfileDto } from './dto/user-profile.dto';
-import { ApiOperation, ApiOkResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiUnauthorizedResponse, ApiNotFoundResponse, ApiQuery, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { BadRequestErrorResponseDto, InternalServerErrorResponseDto, NotFoundResponseDto, UnauthorizdResponseDto } from 'src/exceptions/dto/error-response.dto';
+import { ApiOperation, ApiOkResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiUnauthorizedResponse, ApiNotFoundResponse, ApiQuery, ApiBearerAuth, ApiTags, ApiForbiddenResponse } from '@nestjs/swagger';
+import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto, NotFoundResponseDto, UnauthorizdResponseDto } from 'src/exceptions/dto/error-response.dto';
 import { Expand } from './users.enum';
 import { ExpandValidationPipe } from 'src/pipes/enum.pipe';
 
@@ -27,13 +27,13 @@ export class UsersController {
   @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
   @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
+  @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiQuery({ name: 'expand', enum: Expand, isArray: true, required: false, type: String})
   @Get("/me")
   aboutMe(@User() user: UserEntity,
-          @Query('expand', ExpandValidationPipe) expand?: Expand[]
+          @Query('expand', new ExpandValidationPipe(Expand)) expand?: Expand[]
   ) {
-    console.log(expand)
     return this.usersService.getUserProfile(user.name, expand)
   }
 
@@ -43,13 +43,13 @@ export class UsersController {
   @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
   @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
+  @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiQuery({ name: 'expand', enum: Expand, isArray: true, required: false, type: String})
   @Get("/:name")
   getProfile(@Param('name') name: string,
-             @Query('expand', ExpandValidationPipe) expand?: Expand[]
+             @Query('expand', new ExpandValidationPipe(Expand)) expand?: Expand[]
   ) {
-    console.log(expand, 2)
     return this.usersService.getUserProfile(name, expand);
   }
 }

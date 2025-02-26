@@ -29,20 +29,18 @@ export class UserProfileDto {
     readonly roles: string[]
 
     @ApiProperty({
-        // type: [String],
         default: [],
         description: "User comments"
     })
     @IsArray()
-    readonly comments: Comment[]
+    readonly comments?: Comment[]
 
     @ApiProperty({
-        // type: [String],
         default: [],
         description: "User issues"
     })
     @IsArray()
-    readonly issues: Issue[]
+    readonly issues?: Issue[]
 
 
 }

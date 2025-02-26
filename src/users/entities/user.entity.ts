@@ -1,6 +1,5 @@
 import { Issue, Comment } from "@prisma/client";
 
-
 export class UserEntity {
     readonly id: string;
     readonly name: string;

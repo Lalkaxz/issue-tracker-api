@@ -1,13 +1,13 @@
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String @unique
-  password String
-  roles    String[] @default(["user"])
-  issues   Issue[]
-  comments Comment[]
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  name       String @unique
+  password   String
+  roles      String[] @default(["user"])
+  issues     Issue[]
+  comments   Comment[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
-  token    String @unique
+  token      String @unique
 }
 
 model Issue {
@@ -15,20 +15,20 @@ model Issue {
   title       String
   description String
   status      String @default("open") // open, in-progress, closed
-  authorId    String @db.ObjectId
-  author      User     @relation(fields: [authorId], references: [id])
+  authorName  String 
+  author      User     @relation(fields: [authorName], references: [name])
   comments    Comment[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 model Comment {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  text     String
-  issueId  String @db.ObjectId
-  issue    Issue @relation(fields: [issueId], references: [id])
-  authorId String @db.ObjectId
-  author   User  @relation(fields: [authorId], references: [id])
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  text       String
+  issueId    String @db.ObjectId
+  issue      Issue @relation(fields: [issueId], references: [id])
+  authorName String 
+  author     User  @relation(fields: [authorName], references: [name])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
 }
