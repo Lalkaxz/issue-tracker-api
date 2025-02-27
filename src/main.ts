@@ -5,8 +5,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Logger, PinoLogger } from 'nestjs-pino';
-import { LoggingInterceptor } from './logger/logging.interceptor';
-import { HttpExceptionFilter } from './exceptions/http-exception.filter';
+import { LoggingInterceptor } from './core/logger/logging.interceptor';
+import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 
 function createSwagger(app: INestApplication): void {
   const swaggerConfig = new DocumentBuilder()

@@ -3,10 +3,11 @@ import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ADMIN_CONTROLLER } from '@app/contract';
 
 @ApiBearerAuth()
 @ApiTags('admin')
-@Controller('admin')
+@Controller({ host: ADMIN_CONTROLLER})
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
@@ -17,7 +18,7 @@ export class AdminController {
 
   @Get()
   findAll() {
-    return this.adminService.findAll();
+    return "admin";
   }
 
   @Get(':id')

@@ -3,15 +3,16 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TokenResponseDto } from './dto/token-response.dto';
-import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto  } from 'src/exceptions/dto/error-response.dto';
+import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto  } from 'src/common/exceptions/dto/error-response.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { User } from 'src/users/users.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { AUTH_CONTROLLER, AUTH_ROUTES } from '@app/contract';
 
 @ApiBearerAuth()
 @ApiTags('auth')
-@Controller('auth')
+@Controller(AUTH_CONTROLLER)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -20,8 +21,8 @@ export class AuthController {
   @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
   @ApiInternalServerErrorResponse({type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiBody({ type: CreateUserDto })
-  @Post('/register')
-  registation(@Body() createUserDto: CreateUserDto) {
+  @Post(AUTH_ROUTES.CREATE)
+  create(@Body() createUserDto: CreateUserDto) {
     return this.authService.create(createUserDto);
   }
 
@@ -32,7 +33,7 @@ export class AuthController {
   @ApiInternalServerErrorResponse({type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiBody({ type: CreateUserDto })
   @HttpCode(200)
-  @Post('/login')
+  @Post(AUTH_ROUTES.LOGIN)
   login(@Body() createUserDto: CreateUserDto) {
     return this.authService.login(createUserDto);
   }
@@ -45,7 +46,7 @@ export class AuthController {
   @ApiInternalServerErrorResponse({type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiBody({ type: RefreshTokenDto })
   @HttpCode(200)
-  @Post('/refresh')
+  @Post(AUTH_ROUTES.REFRESH)
   refresh(@Body() refreshTokenDto: RefreshTokenDto,
           @User() user: UserEntity) {
     return this.authService.refresh(refreshTokenDto, user);

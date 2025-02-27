@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/core/prisma/prisma.service';
 import { UserDbDto } from './dto/user-db.dto';
 import { Prisma, User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,9 +15,11 @@ export class UsersService {
     return await this.prismaService.user.create({data: user});
   }
 
-  // Find user document in database with required name and return it.
+  // Find user document in database with required name and return it. Not for user use.
   async findUserByName(name: string): Promise<User | null> {
-    return await this.prismaService.user.findFirst({ where: {name} });
+    return await this.prismaService.user.findFirst({
+       where: {name},
+    });
   }
   
   // TODO:

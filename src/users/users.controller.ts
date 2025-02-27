@@ -1,24 +1,24 @@
 import { Controller, Get, Param, Delete, UseGuards, Req, Query, ParseArrayPipe, UsePipes } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { Roles } from 'src/roles/roles.decorator';
-import { Role } from 'src/roles/enums/role.enum';
-import { Request } from 'express';
+import { RolesGuard } from 'src/common/roles/roles.guard';
+import { Roles } from 'src/common/roles/roles.decorator';
+import { Role } from 'src/common/roles/enums/role.enum';
 import { User } from './users.decorator';
 import { UserEntity } from './entities/user.entity';
 import { UserProfileDto } from './dto/user-profile.dto';
 import { ApiOperation, ApiOkResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiUnauthorizedResponse, ApiNotFoundResponse, ApiQuery, ApiBearerAuth, ApiTags, ApiForbiddenResponse } from '@nestjs/swagger';
-import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto, NotFoundResponseDto, UnauthorizdResponseDto } from 'src/exceptions/dto/error-response.dto';
+import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto, NotFoundResponseDto, UnauthorizdResponseDto } from 'src/common/exceptions/dto/error-response.dto';
 import { Expand } from './users.enum';
-import { ExpandValidationPipe } from 'src/pipes/enum.pipe';
+import { ExpandValidationPipe } from 'src/common/pipes/enum.pipe';
+import { USERS_CONTROLLER, USERS_ROUTES } from '@app/contract';
 
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles([Role.User])
 @ApiBearerAuth()
 @ApiTags('users')
-@Controller('users')
+@Controller(USERS_CONTROLLER)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -30,7 +30,7 @@ export class UsersController {
   @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiQuery({ name: 'expand', enum: Expand, isArray: true, required: false, type: String})
-  @Get("/me")
+  @Get(USERS_ROUTES.ME)
   aboutMe(@User() user: UserEntity,
           @Query('expand', new ExpandValidationPipe(Expand)) expand?: Expand[]
   ) {
@@ -46,7 +46,7 @@ export class UsersController {
   @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiQuery({ name: 'expand', enum: Expand, isArray: true, required: false, type: String})
-  @Get("/:name")
+  @Get(USERS_ROUTES.GET_BY_NAME)
   getProfile(@Param('name') name: string,
              @Query('expand', new ExpandValidationPipe(Expand)) expand?: Expand[]
   ) {

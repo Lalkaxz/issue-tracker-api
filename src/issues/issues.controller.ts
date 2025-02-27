@@ -1,24 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe, Query, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, ParseIntPipe, Query, Put } from '@nestjs/common';
 import { IssuesService } from './issues.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
-import { ApiOperation, ApiOkResponse, ApiBadRequestResponse, ApiUnauthorizedResponse, ApiNotFoundResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiBearerAuth, ApiTags, ApiForbiddenResponse } from '@nestjs/swagger';
-import { BadRequestErrorResponseDto, UnauthorizdResponseDto, NotFoundResponseDto, InternalServerErrorResponseDto, ForbiddenResponseDto } from 'src/exceptions/dto/error-response.dto';
-import { UserProfileDto } from 'src/users/dto/user-profile.dto';
+import { ApiOperation, ApiOkResponse, ApiBadRequestResponse, ApiUnauthorizedResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiBearerAuth, ApiTags, ApiForbiddenResponse } from '@nestjs/swagger';
+import { BadRequestErrorResponseDto, UnauthorizdResponseDto, InternalServerErrorResponseDto, ForbiddenResponseDto } from 'src/common/exceptions/dto/error-response.dto';
 import { User } from 'src/users/users.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Role } from 'src/roles/enums/role.enum';
-import { Roles } from 'src/roles/roles.decorator';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { ParseObjectIdPipe } from 'src/pipes/object-id.pipe';
+import { Role } from 'src/common/roles/enums/role.enum';
+import { Roles } from 'src/common/roles/roles.decorator';
+import { RolesGuard } from 'src/common/roles/roles.guard';
+import { ParseObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 import { IssueDto } from './dto/issue.dto';
+import { ISSUES_CONTROLLER, ISSUES_ROUTES } from '@app/contract';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles([Role.User])
 @ApiBearerAuth()
 @ApiTags('issues')
-@Controller('issues')
+@Controller(ISSUES_CONTROLLER)
 export class IssuesController {
   constructor(private readonly issuesService: IssuesService) {}
 
@@ -28,7 +28,7 @@ export class IssuesController {
   @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
   @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
-  @Post()
+  @Post(ISSUES_ROUTES.CREATE)
   create(@Body() createIssueDto: CreateIssueDto,
          @User() user: UserEntity
     ) {
@@ -42,7 +42,7 @@ export class IssuesController {
   @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
   @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
-  @Get()
+  @Get(ISSUES_ROUTES.GET_ALL)
   findAll(@Query('limit', new ParseIntPipe({optional: true})) limit?: number) {
     return this.issuesService.findAll(limit);
   }
@@ -54,7 +54,7 @@ export class IssuesController {
   @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
   @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
-  @Get(':id')
+  @Get(ISSUES_ROUTES.GET_BY_ID)
   findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.issuesService.findOne(id);
   }
@@ -66,7 +66,7 @@ export class IssuesController {
   @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
   @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
-  @Put(':id')
+  @Put(ISSUES_ROUTES.UPDATE)
   update(@Param('id', ParseObjectIdPipe) id: string, 
          @User() user: UserEntity,
          @Body() updateIssueDto: UpdateIssueDto
@@ -81,7 +81,7 @@ export class IssuesController {
   @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
   @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
   @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
-  @Delete(':id')
+  @Delete(ISSUES_ROUTES.DELETE)
   remove(@Param('id', ParseObjectIdPipe) id: string,
          @User() user: UserEntity
   ) {

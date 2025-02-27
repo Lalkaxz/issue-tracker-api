@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PrismaModule } from '../prisma/prisma.module';
+import { PrismaModule } from '../core/prisma/prisma.module';
 import { IssuesModule } from '../issues/issues.module';
 import { UsersModule } from 'src/users/users.module';
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import { AuthModule } from 'src/auth/auth.module';
 import { AdminModule } from 'src/admin/admin.module';
-import configuration from 'src/config/configuration';
-import validation from 'src/config/validation';
+import configuration from 'src/core/config/configuration';
+import validation from 'src/core/config/validation';
 import { LoggerModule } from 'nestjs-pino';
-import httpConfiguration from 'src/logger/logger.config';
-import { exceptionFilter } from 'src/exceptions/http-exception.filter';
+import httpConfiguration from 'src/core/logger/logger.config';
+import { exceptionFilter } from 'src/common/exceptions/http-exception.filter';
 
 
 @Module({
