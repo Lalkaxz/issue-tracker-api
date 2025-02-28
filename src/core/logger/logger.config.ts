@@ -7,7 +7,7 @@ const httpConfiguration: Options = {
         options: {
           colorize: true, 
           translateTime: 'dd.mm.yyyy, HH:MM:ss.l', 
-          ignore: 'pid,hostname,context',
+          ignore: 'pid,hostname,context,req,res',
           singleLine: true,
         },
       },

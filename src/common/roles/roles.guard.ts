@@ -20,7 +20,7 @@ export class RolesGuard implements CanActivate {
         const request = context.switchToHttp().getRequest<Request>();
         const user: UserEntity = request.user;
         if (!user) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(`'User' in Request not provided.`);
         }
         // Compare allowed roles and user roles, resolve request if user has allowed roles.
         return roles.some((role) => user.roles.includes(role));

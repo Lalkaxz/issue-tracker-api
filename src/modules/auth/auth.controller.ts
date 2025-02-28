@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete, HttpStatus, InternalServerErrorException, HttpCode, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto  } from 'src/common/exceptions/dto/error-response.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { User } from 'src/common/decorators/users.decorator';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { AUTH_CONTROLLER, AUTH_ROUTES } from '@app/contract';
+import { JwtAuthorization } from 'src/common/decorators/auth.decorator';
+import { ApiDefaultResponses } from 'src/common/decorators/default-response.decorator';
 
 @ApiBearerAuth()
 @ApiTags('auth')
@@ -39,11 +40,9 @@ export class AuthController {
   }
   
 
-  @UseGuards(JwtAuthGuard)
+  @JwtAuthorization()
   @ApiOperation({ summary: "Refresh and return new user token" })
-  @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
-  @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
-  @ApiInternalServerErrorResponse({type: InternalServerErrorResponseDto, description: "Internal server error" })
+  @ApiDefaultResponses()
   @ApiBody({ type: RefreshTokenDto })
   @HttpCode(200)
   @Post(AUTH_ROUTES.REFRESH)

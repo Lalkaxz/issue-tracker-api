@@ -12,23 +12,20 @@ import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorRe
 import { Expand } from '../../common/enums/users.enum';
 import { ExpandValidationPipe } from 'src/common/pipes/enum.pipe';
 import { USERS_CONTROLLER, USERS_ROUTES } from '@app/contract';
+import { ApiDefaultResponses } from 'src/common/decorators/default-response.decorator';
 
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles([Role.User])
 @ApiBearerAuth()
 @ApiTags('users')
+@ApiDefaultResponses()
 @Controller(USERS_CONTROLLER)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({ summary: "Return current user profile"})
   @ApiOkResponse({ type: UserProfileDto, description: "Return user profile" })
-  @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
-  @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
-  @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
-  @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
-  @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiQuery({ name: 'expand', enum: Expand, isArray: true, required: false, type: String})
   @Get(USERS_ROUTES.ME)
   aboutMe(@User() user: UserEntity,
@@ -40,11 +37,7 @@ export class UsersController {
 
   @ApiOperation({ summary: "Return user profile by name"})
   @ApiOkResponse({ type: UserProfileDto, description: "Return user profile" })
-  @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
-  @ApiUnauthorizedResponse({ type: UnauthorizdResponseDto, description: "Unauthorized" })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
-  @ApiForbiddenResponse({ type: ForbiddenResponseDto, description: "Forbidden" })
-  @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiQuery({ name: 'expand', enum: Expand, isArray: true, required: false, type: String})
   @Get(USERS_ROUTES.GET_BY_NAME)
   getProfile(@Param('name') name: string,

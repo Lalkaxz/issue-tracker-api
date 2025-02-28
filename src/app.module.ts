@@ -8,8 +8,8 @@ import { AdminModule } from 'src/modules/admin/admin.module';
 import configuration from 'src/core/config/configuration';
 import { LoggerModule } from 'nestjs-pino';
 import httpConfiguration from 'src/core/logger/logger.config';
-import { exceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { IS_DEV_ENV } from './common/utils/is-dev.util';
+import { exceptionFilter } from 'src/core/logger/http-exception.filter';
+import { IS_DEV_ENV, isDevEnv } from './common/utils/is-dev.util';
 
 
 @Module({
@@ -19,13 +19,20 @@ import { IS_DEV_ENV } from './common/utils/is-dev.util';
     UsersModule, 
     AuthModule, 
     AdminModule,
+    //TODO:
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async () => {
-        return {
-          pinoHttp: httpConfiguration
+      useFactory: async (configService: ConfigService) => {
+        const options = {
+          pinoHttp: { ...httpConfiguration }
         }
+        if (options.pinoHttp.transport && options.pinoHttp.transport.options) {
+          options.pinoHttp.transport.options.ignore = !isDevEnv(configService)
+          ? 'pid,hostname,context,req,res'
+          : '';
+        }
+        return options;
       }
     }),
     ConfigModule.forRoot({

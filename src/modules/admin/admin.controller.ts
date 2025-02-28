@@ -1,10 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ADMIN_CONTROLLER } from '@app/contract';
+import { Role } from 'src/common/roles/enums/role.enum';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { Roles } from 'src/common/roles/roles.decorator';
+import { RolesGuard } from 'src/common/roles/roles.guard';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles([Role.Admin])
 @ApiBearerAuth()
 @ApiTags('admin')
 @Controller({ host: ADMIN_CONTROLLER})
