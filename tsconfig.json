@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "typeRoots": [
-      "src/core/types",
+      "src/common/types",
       "./node_modules/@types"
     ],
     "target": "ES2021",

@@ -4,7 +4,7 @@ import { UserDbDto } from './dto/user-db.dto';
 import { Prisma, User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserProfileDto } from './dto/user-profile.dto';
-import { Expand } from './users.enum';
+import { Expand } from '../../common/enums/users.enum';
 
 @Injectable()
 export class UsersService {

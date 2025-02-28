@@ -1,15 +1,15 @@
 import { Controller, Get, Param, Delete, UseGuards, Req, Query, ParseArrayPipe, UsePipes } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/roles/roles.guard';
 import { Roles } from 'src/common/roles/roles.decorator';
 import { Role } from 'src/common/roles/enums/role.enum';
-import { User } from './users.decorator';
+import { User } from '../../common/decorators/users.decorator';
 import { UserEntity } from './entities/user.entity';
 import { UserProfileDto } from './dto/user-profile.dto';
 import { ApiOperation, ApiOkResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiUnauthorizedResponse, ApiNotFoundResponse, ApiQuery, ApiBearerAuth, ApiTags, ApiForbiddenResponse } from '@nestjs/swagger';
 import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto, NotFoundResponseDto, UnauthorizdResponseDto } from 'src/common/exceptions/dto/error-response.dto';
-import { Expand } from './users.enum';
+import { Expand } from '../../common/enums/users.enum';
 import { ExpandValidationPipe } from 'src/common/pipes/enum.pipe';
 import { USERS_CONTROLLER, USERS_ROUTES } from '@app/contract';
 

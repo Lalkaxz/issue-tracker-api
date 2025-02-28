@@ -1,17 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PrismaModule } from '../core/prisma/prisma.module';
-import { IssuesModule } from '../issues/issues.module';
-import { UsersModule } from 'src/users/users.module';
+import { PrismaModule } from './core/prisma/prisma.module';
+import { IssuesModule } from './modules/issues/issues.module';
+import { UsersModule } from 'src/modules/users/users.module';
 import {ConfigModule, ConfigService} from "@nestjs/config";
-import { AuthModule } from 'src/auth/auth.module';
-import { AdminModule } from 'src/admin/admin.module';
+import { AuthModule } from 'src/modules/auth/auth.module';
+import { AdminModule } from 'src/modules/admin/admin.module';
 import configuration from 'src/core/config/configuration';
-import validation from 'src/core/config/validation';
 import { LoggerModule } from 'nestjs-pino';
 import httpConfiguration from 'src/core/logger/logger.config';
 import { exceptionFilter } from 'src/common/exceptions/http-exception.filter';
+import { IS_DEV_ENV } from './common/utils/is-dev.util';
 
 
 @Module({
@@ -33,12 +31,10 @@ import { exceptionFilter } from 'src/common/exceptions/http-exception.filter';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
-      validationSchema: validation
+      ignoreEnvFile: !IS_DEV_ENV
     })
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     exceptionFilter
   ],
 })

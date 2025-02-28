@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Body, Param, Delete, HttpStatus, InternalServerErrorException, HttpCode, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { BadRequestErrorResponseDto, ForbiddenResponseDto, InternalServerErrorResponseDto  } from 'src/common/exceptions/dto/error-response.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { User } from 'src/users/users.decorator';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { User } from 'src/common/decorators/users.decorator';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { AUTH_CONTROLLER, AUTH_ROUTES } from '@app/contract';
 
 @ApiBearerAuth()

@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { Issue } from '@prisma/client';
 

@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
+import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
+import { UsersService } from 'src/modules/users/users.service';
 import * as bcrypt from 'bcryptjs'
-import { UserDbDto } from 'src/users/dto/user-db.dto';
+import { UserDbDto } from 'src/modules/users/dto/user-db.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 const SALT_LENGTH = 5;
 

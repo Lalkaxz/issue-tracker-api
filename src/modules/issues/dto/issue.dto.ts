@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Comment } from "@prisma/client";
-import { UserProfileDto } from "src/users/dto/user-profile.dto";
+import { UserProfileDto } from "src/modules/users/dto/user-profile.dto";
 
 export class IssueDto {
     @ApiProperty({ example: "60c72b2f5f1b2c6d88f8a5b4", description: "Unique issue id" })

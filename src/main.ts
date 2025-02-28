@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
+import { AppModule } from './app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { Logger, PinoLogger } from 'nestjs-pino';
+import { PinoLogger } from 'nestjs-pino';
 import { LoggingInterceptor } from './core/logger/logging.interceptor';
-import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
+
 
 function createSwagger(app: INestApplication): void {
   const swaggerConfig = new DocumentBuilder()
@@ -27,10 +27,10 @@ async function bootstrap() {
 
   const logger = await app.resolve(PinoLogger);
 
-  const port = config.getOrThrow<number>("port")
-  const host = config.getOrThrow<string>("host")
+  const port = config.getOrThrow<string>("PORT")
+  const host = config.getOrThrow<string>("HOST")
 
-  app.setGlobalPrefix(config.getOrThrow<string>("prefix"))
+  app.setGlobalPrefix(config.getOrThrow<string>("PREFIX"))
 
   createSwagger(app);
 
