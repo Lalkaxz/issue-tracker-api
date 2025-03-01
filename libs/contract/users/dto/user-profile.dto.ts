@@ -36,7 +36,8 @@ export class UserProfileDto {
 
     @ApiProperty({
         type: Date,
-        description: "User creation date"
+        description: "User creation date",
+        example: "2025-02-26T12:00:00.000Z"
     })
     @Expose() readonly createdAt: Date;
 }

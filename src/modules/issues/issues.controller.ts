@@ -2,13 +2,13 @@ import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, Query, Put, U
 import { IssuesService } from './issues.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
-import { ApiOperation, ApiOkResponse, ApiBadRequestResponse, ApiUnauthorizedResponse, ApiInternalServerErrorResponse, ApiCreatedResponse, ApiBearerAuth, ApiTags, ApiForbiddenResponse, ApiNotFoundResponse } from '@nestjs/swagger';
-import { BadRequestErrorResponseDto, UnauthorizdResponseDto, InternalServerErrorResponseDto, ForbiddenResponseDto, NotFoundResponseDto } from 'src/common/exceptions/dto/error-response.dto';
+import { ApiOperation, ApiOkResponse, ApiCreatedResponse, ApiBearerAuth, ApiTags, ApiNotFoundResponse } from '@nestjs/swagger';
+import { NotFoundResponseDto } from 'src/common/exceptions/dto/error-response.dto';
 import { User } from 'src/common/decorators/users.decorator';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { Role } from 'src/common/roles/enums/role.enum';
 import { ParseObjectIdPipe } from 'src/common/pipes/object-id.pipe';
-import { IssueDto } from './dto/issue.dto';
+import { IssueDto } from '@app/contract';
 import { ISSUES_CONTROLLER, ISSUES_ROUTES } from '@app/contract';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Roles } from 'src/common/roles/roles.decorator';

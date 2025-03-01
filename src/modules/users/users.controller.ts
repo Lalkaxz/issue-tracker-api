@@ -6,7 +6,7 @@ import { Roles } from 'src/common/roles/roles.decorator';
 import { Role } from 'src/common/roles/enums/role.enum';
 import { User } from '../../common/decorators/users.decorator';
 import { UserEntity } from './entities/user.entity';
-import { UserProfileDto } from './dto/user-profile.dto';
+import { UserProfileDto } from '@app/contract';
 import { ApiOperation, ApiOkResponse, ApiNotFoundResponse, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { NotFoundResponseDto } from 'src/common/exceptions/dto/error-response.dto';
 import { USERS_CONTROLLER, USERS_ROUTES } from '@app/contract';
