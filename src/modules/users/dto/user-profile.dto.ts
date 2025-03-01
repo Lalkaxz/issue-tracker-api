@@ -1,46 +1,42 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Comment, Issue } from "@prisma/client";
-import { IsNotEmpty, IsString, IsArray } from "class-validator";
+import { Exclude, Expose } from "class-transformer";
 
+@Exclude()
 export class UserProfileDto {
     @ApiProperty({
         type: String,
         description: "Unique id"
     })
-    @IsString()
-    @IsNotEmpty()
-    readonly id: string;
+    @Expose() readonly id: string;
 
     @ApiProperty({
         type: String,
         description: "User name"
     })
-    @IsString()
-    @IsNotEmpty()
-    readonly name: string;
+    @Expose() readonly name: string;
 
     @ApiProperty({
         type: [String],
         description: "User roles"
     })
-    @IsArray()
-    @IsString({ each: true })
-    @IsNotEmpty()
-    readonly roles: string[]
+    @Expose() readonly roles: string[]
 
     @ApiProperty({
         default: [],
         description: "User comments"
     })
-    @IsArray()
-    readonly comments?: Comment[]
+    @Expose() readonly comments?: Comment[]
 
     @ApiProperty({
         default: [],
         description: "User issues"
     })
-    @IsArray()
-    readonly issues?: Issue[]
+    @Expose() readonly issues?: Issue[]
 
-
+    @ApiProperty({
+        type: Date,
+        description: "User creation date"
+    })
+    @Expose() readonly createdAt: Date;
 }

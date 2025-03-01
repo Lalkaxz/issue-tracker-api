@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { UserDbDto } from './dto/user-db.dto';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserProfileDto } from './dto/user-profile.dto';
-import { Expand } from '../../common/enums/users.enum';
 
 @Injectable()
 export class UsersService {
@@ -14,26 +13,10 @@ export class UsersService {
   async create(user: UserDbDto) {
     return await this.prismaService.user.create({data: user});
   }
-
-  // Find user document in database with required name and return it. Not for user use.
-  async findUserByName(name: string): Promise<User | null> {
-    return await this.prismaService.user.findFirst({
-       where: {name},
-    });
-  }
   
-  // TODO:
-  async getAllUsers() {
-    const selectOptions: Prisma.UserSelect = {
-      id: true,
-      name: true,
-      roles: true,
-      createdAt: true
-    }
-
-    return await this.prismaService.user.findMany({
-      select: selectOptions,
-    })
+  // Return all users profiles.
+  async getAllUsers(): Promise<UserProfileDto[]> {
+    return await this.prismaService.user.findMany()
   }
 
   // Update user token in database document.
@@ -46,25 +29,26 @@ export class UsersService {
   }
   
   // Find user document in database and return user profile.
-  async getUserProfile(name: string, expand?: Expand[]): Promise<UserProfileDto> {
-    const selectOptions: Prisma.UserSelect = {
-      id: true,
-      name: true,
-      roles: true,
-      createdAt: true
-    }
-
-    expand?.forEach((value) => selectOptions[value] = true);
-
+  async getUserProfile(name: string): Promise<UserProfileDto> {
     const profile = await this.prismaService.user.findFirst({
       where: {name},
-      select: selectOptions
+      include: {
+        issues: true,
+        comments: true
+      }
     })
-    
+
     if (!profile) {
       throw new NotFoundException("User not found");
     }
     return profile;
+  }
+
+  // Find user document in database with required name and return it. Not for user use.
+  async findUserByName(name: string): Promise<User | null> {
+    return await this.prismaService.user.findFirst({
+       where: {name},
+    });
   }
 
 }
