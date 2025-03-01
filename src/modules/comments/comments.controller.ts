@@ -7,18 +7,26 @@ import { RolesGuard } from 'src/common/roles/roles.guard';
 import { Roles } from 'src/common/roles/roles.decorator';
 import { Role } from 'src/common/roles/enums/role.enum';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CommentDto, COMMENTS_CONTROLLER, COMMENTS_ROUTES } from '@app/contract';
+import { Issue } from 'src/common/decorators/issues.decorator';
+import { IssueEntity } from '../issues/entities/issue.entity';
+import { User } from 'src/common/decorators/users.decorator';
+import { UserEntity } from '../users/entities/user.entity';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles([Role.User])
 @ApiBearerAuth()
 @ApiTags('comments')
-@Controller('comments')
+@Controller(COMMENTS_CONTROLLER)
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(createCommentDto);
+  @Post(COMMENTS_ROUTES.CREATE)
+  create(@Body() createCommentDto: CreateCommentDto,
+         @Issue() issue: IssueEntity,
+         @User() user: UserEntity         
+  ): Promise<CommentDto> {
+    return this.commentsService.create(createCommentDto, issue, user);
   }
 
   @Get()

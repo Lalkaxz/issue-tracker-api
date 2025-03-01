@@ -48,7 +48,7 @@ export class IssuesService {
 
     const issue = await this.prismaService.issue.findFirst({where: {id: id}});
     if (!issue) {
-      throw new BadRequestException('Issue not found');
+      throw new NotFoundException('Issue not found');
     }
 
     if (user.name !== issue.authorName) {
@@ -69,7 +69,7 @@ export class IssuesService {
     
     const issue = await this.prismaService.issue.findFirst({where: {id: id}});
     if (!issue) {
-      throw new BadRequestException('Issue not found');
+      throw new NotFoundException('Issue not found');
     }
 
     if (user.name !== issue.authorName) {

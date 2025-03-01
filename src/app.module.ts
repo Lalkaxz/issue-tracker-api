@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { PrismaModule } from './core/prisma/prisma.module';
 import { IssuesModule } from './modules/issues/issues.module';
 import { UsersModule } from 'src/modules/users/users.module';
@@ -10,6 +10,8 @@ import { LoggerModule } from 'nestjs-pino';
 import httpConfiguration from 'src/core/logger/logger.config';
 import { exceptionFilter } from 'src/core/logger/http-exception.filter';
 import { IS_DEV_ENV, isDevEnv } from './common/utils/is-dev.util';
+import { PrismaMiddleware } from './common/middlewares/prisma.middleware';
+import { COMMENTS_CONTROLLER } from '@app/contract';
 
 
 @Module({
@@ -45,4 +47,8 @@ import { IS_DEV_ENV, isDevEnv } from './common/utils/is-dev.util';
     exceptionFilter
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PrismaMiddleware).forRoutes(COMMENTS_CONTROLLER);
+  }
+}

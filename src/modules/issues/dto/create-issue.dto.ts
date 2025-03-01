@@ -5,7 +5,9 @@ export class CreateIssueDto {
     @ApiProperty({
         type: String,
         description: "Issue title, min 3 symbols, max 100 symbols.",
-        example: "Bug: Fix incorrect timestamp of Comment Creation Date."
+        example: "Bug: Fix incorrect timestamp of Comment Creation Date.",
+        minLength: 3,
+        maxLength: 100
     })
     @IsNotEmpty()
     @IsString()
@@ -15,7 +17,9 @@ export class CreateIssueDto {
     @ApiProperty({
         type: String,
         description: "Issue description, min 10 symbols, max 350 symbols.",
-        example: `The creation date of comments is displayed incorrectly. Instead of showing the actual timestamp, it sometimes appears as 'Invalid Date'.`
+        example: `The creation date of comments is displayed incorrectly. Instead of showing the actual timestamp, it sometimes appears as 'Invalid Date'.`,
+        minLength: 10,
+        maxLength: 350
     })
     @IsNotEmpty()
     @IsString()
