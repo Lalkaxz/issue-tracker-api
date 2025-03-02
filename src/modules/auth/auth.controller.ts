@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -33,7 +33,7 @@ export class AuthController {
   @ApiBadRequestResponse({ type: BadRequestErrorResponseDto, description: "Bad request" })
   @ApiInternalServerErrorResponse({type: InternalServerErrorResponseDto, description: "Internal server error" })
   @ApiBody({ type: CreateUserDto })
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @Post(AUTH_ROUTES.LOGIN)
   login(@Body() createUserDto: CreateUserDto) {
     return this.authService.login(createUserDto);
@@ -44,7 +44,7 @@ export class AuthController {
   @ApiOperation({ summary: "Refresh and return new user token" })
   @ApiDefaultResponses()
   @ApiBody({ type: RefreshTokenDto })
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @Post(AUTH_ROUTES.REFRESH)
   refresh(@Body() refreshTokenDto: RefreshTokenDto,
           @User() user: UserEntity) {

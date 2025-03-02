@@ -22,13 +22,13 @@ export class IssuesService {
     return issue;
   }
 
-  // Return all issues.
+  // Return array of issues. Supports limit items.
   async findAll(limit?: number): Promise<Issue[]> {
     const issues = await this.prismaService.issue.findMany({ take: limit });
     return issues;
   }
 
-  // Return issue by id with author and comments.
+  // Return issue by id with author and comments. Throw error if it does not exists.
   async findOne(id: string): Promise<Issue | null> { 
     const issue = await this.prismaService.issue.findFirst({
       where: {id},
@@ -52,13 +52,11 @@ export class IssuesService {
     }
 
     if (user.name !== issue.authorName) {
-      throw new ForbiddenException('Only author can delete issue')
+      throw new ForbiddenException('Only author can update issue');
     }
 
     const updatedIssue = this.prismaService.issue.update({
-      where: {
-        id: id
-      },
+      where: {id},
       data: updateIssueDto
     });
     return updatedIssue;
@@ -73,14 +71,12 @@ export class IssuesService {
     }
 
     if (user.name !== issue.authorName) {
-      throw new ForbiddenException('Only author can delete issue')
+      throw new ForbiddenException('Only author can delete issue');
     }
 
     await this.prismaService.issue.delete({
-      where: {
-        id: id
-      }
-    })
+      where: {id}
+    });
     return { message: 'Issue deleted successfully' };
     
   }

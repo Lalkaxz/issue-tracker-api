@@ -6,7 +6,7 @@ model User {
   issues     Issue[]
   comments   Comment[]
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
   token      String @unique
 }
 
@@ -19,7 +19,7 @@ model Issue {
   author      User     @relation(fields: [authorName], references: [name])
   comments    Comment[]
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
 
 model Comment {
@@ -30,7 +30,7 @@ model Comment {
   authorName String 
   author     User  @relation(fields: [authorName], references: [name])
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 generator client {

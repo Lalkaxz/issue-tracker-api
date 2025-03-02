@@ -7,9 +7,9 @@ import { AuthModule } from 'src/modules/auth/auth.module';
 import { AdminModule } from 'src/modules/admin/admin.module';
 import configuration from 'src/core/config/configuration';
 import { LoggerModule } from 'nestjs-pino';
-import httpConfiguration from 'src/core/logger/logger.config';
+import { optionsFactory } from 'src/core/config/logger.config';
 import { exceptionFilter } from 'src/core/logger/http-exception.filter';
-import { IS_DEV_ENV, isDevEnv } from './common/utils/is-dev.util';
+import { IS_DEV_ENV } from './common/utils/is-dev.util';
 import { PrismaMiddleware } from './common/middlewares/prisma.middleware';
 import { COMMENTS_CONTROLLER } from '@app/contract';
 
@@ -21,21 +21,10 @@ import { COMMENTS_CONTROLLER } from '@app/contract';
     UsersModule, 
     AuthModule, 
     AdminModule,
-    //TODO:
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        const options = {
-          pinoHttp: { ...httpConfiguration }
-        }
-        if (options.pinoHttp.transport && options.pinoHttp.transport.options) {
-          options.pinoHttp.transport.options.ignore = !isDevEnv(configService)
-          ? 'pid,hostname,context,req,res'
-          : '';
-        }
-        return options;
-      }
+      useFactory: optionsFactory
     }),
     ConfigModule.forRoot({
       isGlobal: true,
