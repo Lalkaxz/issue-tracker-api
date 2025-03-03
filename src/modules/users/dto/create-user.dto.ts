@@ -17,7 +17,7 @@ export class CreateUserDto {
 
     @ApiProperty({
         type: String,
-        description: "Hash of password, min 8 symbols, max 36 symbols",
+        description: "User password, min 8 symbols, max 36 symbols",
         example: "John23781",
         minLength: 8,
         maxLength: 36

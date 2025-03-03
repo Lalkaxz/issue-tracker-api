@@ -10,7 +10,12 @@ import { Roles } from 'src/common/roles/roles.decorator';
 import { RolesGuard } from 'src/common/roles/roles.guard';
 import { UsersService } from '../users/users.service';
 import { ParseObjectIdPipe } from 'src/common/pipes/object-id.pipe';
-import { UpdateUserRoleDto } from './dto/update-user.dto';
+import { UpdateUserRoleDto } from '../users/dto/update-user.dto';
+import { DeactivateUserDto } from '../users/dto/deactivate-user.dto';
+import { User } from 'src/common/decorators/users.decorator';
+import { UserEntity } from '../users/entities/user.entity';
+import { DeleteUserDto } from '../users/dto/delete-user.dto';
+
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles([Role.Admin])
@@ -22,30 +27,34 @@ export class AdminController {
               private readonly usersService: UsersService
   ) {}
 
-  @Post()
-  create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
-  }
 
   @Get(ADMIN_ROUTES.GET_ALL_USERS)
   findAll(): Promise<UserProfileDto[]> {
     return this.usersService.getAllUsers();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminService.findOne(+id);
-  }
 
   @Patch(ADMIN_ROUTES.UPDATE_USER_ROLE)
   updateUserRole(@Param('id', ParseObjectIdPipe) id: string,
                  @Body() updateAdminDto: UpdateUserRoleDto
     ) {
-    return this.adminService.update(id, updateAdminDto);
+    return this.adminService.updateUserRole(id, updateAdminDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminService.remove(+id);
+
+  @Patch(ADMIN_ROUTES.DEACTIVATE_USER)
+  deactivateUser(@Param('id', ParseObjectIdPipe) id: string,
+                 @Body() deactivateUserDto: DeactivateUserDto
+  ) {
+    return this.adminService.deactivateUser(id, deactivateUserDto.isDeactivated);
+  }
+
+
+  @Delete(ADMIN_ROUTES.DELETE_USER)
+  removeUser(@Param('id', ParseObjectIdPipe) id: string,
+             @User() user: UserEntity,
+             @Body() deleteUserDto: DeleteUserDto
+  ) {
+    return this.usersService.deleteUser(id, user, deleteUserDto);
   }
 }

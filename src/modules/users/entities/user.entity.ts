@@ -11,4 +11,6 @@ export type UserEntity = {
     readonly updatedAt: Date;
     readonly issues?: Issue[];
     readonly comments?: Comment[];
+    readonly isDeactivated: boolean;
+    readonly deactivatedAt?: Date | null;
 }

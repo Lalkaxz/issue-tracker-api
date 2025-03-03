@@ -24,4 +24,10 @@ export class UserProfileDto {
 
     @ApiProperty({ type: Date, description: "User creation date", example: "2025-02-26T12:00:00.000Z" })
     @Expose() readonly createdAt: Date;
+
+    @ApiProperty({ type: Boolean, description: "User deactivation status", example: false})
+    @Expose() readonly isDeactivated: boolean;
+
+    @ApiProperty({ type: Date, description: "User deactivation date", example: "2025-02-26T12:00:00.000Z", required: false})
+    @Expose() readonly deactivatedAt?: Date | null;
 }

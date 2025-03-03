@@ -11,10 +11,8 @@ import { CommentsModule } from '../comments/comments.module';
   providers: [AdminService],
   exports: [AdminService],
   imports: [
-    UsersModule,
-    AuthModule,
-    IssuesModule,
-    CommentsModule
+    forwardRef(() => UsersModule),
+    forwardRef(() => AuthModule),
   ]
 })
 export class AdminModule {}

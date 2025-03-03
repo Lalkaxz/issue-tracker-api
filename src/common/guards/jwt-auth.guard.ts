@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, BadRequestException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, BadRequestException, UnauthorizedException, InternalServerErrorException, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { UsersService } from 'src/modules/users/users.service';
@@ -30,6 +30,10 @@ export class JwtAuthGuard implements CanActivate {
         // Check if token from header not current user JWT-token.
         if (token !== user.token) {
             throw new UnauthorizedException('Invalid token');
+        }
+
+        if (user.isDeactivated) {
+            throw new ForbiddenException('Your account is deactivated');
         }
 
         request.user = user;

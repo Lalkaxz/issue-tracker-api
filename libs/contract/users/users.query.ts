@@ -5,7 +5,9 @@ export const authorSelectOptions: Prisma.UserSelect = {
     name: true,
     displayName: true,
     roles: true,
-    createdAt: true
+    createdAt: true,
+    isDeactivated: true,
+    deactivatedAt: true
 }
 
 export const usersProfileSelectOptions: Prisma.UserSelect = {
@@ -15,5 +17,7 @@ export const usersProfileSelectOptions: Prisma.UserSelect = {
     roles: true,
     issues: true,
     comments: true,
-    createdAt: true
+    createdAt: true,
+    isDeactivated: true,
+    deactivatedAt: true,
 }

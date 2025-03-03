@@ -7,6 +7,7 @@ import { UserDbDto } from 'src/modules/users/dto/user-db.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { validatePasswords } from 'src/common/utils/compare-passwords.util';
 
 const SALT_LENGTH = 5;
 
@@ -50,7 +51,10 @@ export class AuthService {
   // Update user token.
   async refresh(passwordDto: RefreshTokenDto,
                 user: UserEntity): Promise<TokenResponseDto> {
-    this.validatePassword(passwordDto.password, user);
+    const match = await validatePasswords(passwordDto.password, user.password);
+    if (!match) {
+      throw new BadRequestException("Incorrect password");
+    }
 
     const newToken = await this.generateToken(user.name);
 
@@ -95,15 +99,4 @@ export class AuthService {
 
     return user;
   }
-
-  private async validatePassword(password: string, user: UserEntity): Promise<boolean> {
-    const passwordsEquals = await bcrypt.compare(password, user.password);
-    // If the database password and the request body do not match
-    if (!passwordsEquals) {
-      throw new BadRequestException("Incorrect password");
-    }
-    
-    return passwordsEquals;
-  }
-
 }

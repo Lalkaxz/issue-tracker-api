@@ -11,6 +11,9 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
   token       String @unique
+
+  isDeactivated Boolean @default(false)
+  deactivatedAt DateTime? 
 }
 
 model Issue {
@@ -19,7 +22,7 @@ model Issue {
   description String
   status      String @default("open") // open, in-progress, closed
   authorId    String @db.ObjectId 
-  author      User     @relation(fields: [authorId], references: [id])
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments    Comment[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
@@ -31,7 +34,7 @@ model Comment {
   issueId    String @db.ObjectId
   issue      Issue @relation(fields: [issueId], references: [id])
   authorId   String @db.ObjectId
-  author     User  @relation(fields: [authorId], references: [id])
+  author     User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
 }
