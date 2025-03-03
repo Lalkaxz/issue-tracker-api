@@ -29,6 +29,7 @@ export class AuthService {
     // Dto for create user in database.
     const userDbDto: UserDbDto = {
       name: userDto.name,
+      displayName: userDto.name,
       password: hashedPassword,
       token: token
     }
@@ -46,9 +47,9 @@ export class AuthService {
     return { token: user.token };
   }
 
+  // Update user token.
   async refresh(passwordDto: RefreshTokenDto,
                 user: UserEntity): Promise<TokenResponseDto> {
-
     this.validatePassword(passwordDto.password, user);
 
     const newToken = await this.generateToken(user.name);

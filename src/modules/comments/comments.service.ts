@@ -5,6 +5,7 @@ import { PrismaService } from 'src/core/prisma/prisma.service';
 import { IssueEntity } from '../issues/entities/issue.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { CommentDto } from '@app/contract';
+import { commentsIncludeOptions } from '@app/contract';
 
 @Injectable()
 export class CommentsService {
@@ -15,7 +16,7 @@ export class CommentsService {
     return await this.prismaService.comment.create({data: {
       text: commentDto.text,
       issueId: issue.id,
-      authorName: user.name
+      authorId: user.id
     }});
   }
 
@@ -28,9 +29,12 @@ export class CommentsService {
     return comments;
   }
 
-  // Return issue comment by id. Throw error if it does not exists.
+  // Return issue comment by id with author. Throw error if it does not exists.
   async findOne(id: string): Promise<CommentDto> {
-    const comment = await this.prismaService.comment.findUnique({ where: {id} });
+    const comment = await this.prismaService.comment.findUnique({
+      where: {id},
+      include: commentsIncludeOptions
+    });
     if (!comment) {
       throw new NotFoundException('Comment not found');
     }
@@ -46,7 +50,7 @@ export class CommentsService {
       throw new NotFoundException('Comment not found');
     }
 
-    if (user.name !== comment.authorName) {
+    if (user.id !== comment.authorId) {
       throw new ForbiddenException('Only author can update comment');
     }
 
@@ -65,7 +69,7 @@ export class CommentsService {
       throw new NotFoundException('Comment not found');
     }
 
-    if (user.name !== comment.authorName) {
+    if (user.id !== comment.authorId) {
       throw new ForbiddenException('Only author can delete comment');
     }
 

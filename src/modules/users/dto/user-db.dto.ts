@@ -12,6 +12,14 @@ export class UserDbDto {
 
     @ApiProperty({
         type: String,
+        description: "User display name"
+    })
+    @IsString()
+    @IsNotEmpty()
+    readonly displayName: string;
+
+    @ApiProperty({
+        type: String,
         description: "Hash of password"
     })
     @IsString()

@@ -1,8 +1,9 @@
 import { Issue, Comment } from "@prisma/client";
 
-export class UserEntity {
+export type UserEntity = {
     readonly id: string;
     readonly name: string;
+    readonly displayName: string;
     readonly password: string;
     readonly roles: string[];
     readonly token: string;

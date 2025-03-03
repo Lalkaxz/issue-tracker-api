@@ -5,7 +5,7 @@ export class CommentEntity {
     readonly text: string;
     readonly issueId: string;
     readonly issue: Issue;
-    readonly authorName: string;
+    readonly authorId: string;
     readonly author: User;
     readonly createdAt: Date;
     readonly updatedAt: Date;

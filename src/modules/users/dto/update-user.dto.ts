@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, Length } from "class-validator";
 
-export class UpdateUserDto {
+export class UpdateTokenDto {
     @ApiProperty({
         type: String,
         description: "User name",
@@ -19,4 +19,19 @@ export class UpdateUserDto {
     @IsString()
     @IsNotEmpty()
     readonly token: string;
+}
+
+
+export class UpdateDisplayNameDto {
+    @ApiProperty({
+        type: String,
+        description: "User display name",
+        example: "John Smith",
+        minLength: 3,
+        maxLength: 30
+    })
+    @Length(3, 30)
+    @IsString()
+    @IsNotEmpty()
+    readonly displayName: string;
 }

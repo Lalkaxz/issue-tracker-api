@@ -8,5 +8,6 @@ export * from './issues/issues.query';
 export * from './issues/dto/issue.dto';
 export * from './comments/comments.controller';
 export * from './comments/dto/comment.dto';
+export * from './comments/comments.query';
 
 

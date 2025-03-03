@@ -7,8 +7,11 @@ export class UserProfileDto {
     @ApiProperty({ type: String, description: "Unique id" })
     @Expose() readonly id: string;
 
-    @ApiProperty({ type: String, description: "User name" })
+    @ApiProperty({ type: String, description: "Unique user name" })
     @Expose() readonly name: string;
+
+    @ApiProperty({ type: String, description: "User display name" })
+    @Expose() readonly displayName: string;
 
     @ApiProperty({ type: [String], description: "User roles" })
     @Expose() readonly roles: string[]

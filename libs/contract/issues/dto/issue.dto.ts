@@ -17,8 +17,8 @@ export class IssueDto {
     @ApiProperty({ example: "open", description: "Status of the issue", enum: ["open", "in-progress", "closed"] })
     @Expose() readonly status: string;
     
-    @ApiProperty({ example: "67bf22e2e27481030b2053dd", description: "Name of issue author"})
-    @Expose() readonly authorName: string;
+    @ApiProperty({ example: "67bf22e2e27481030b2053dd", description: "Author unique id"})
+    @Expose() readonly authorId: string;
 
     @ApiProperty({ description: "Issue author", default: {} })
     @Expose() readonly author?: UserProfileDto;

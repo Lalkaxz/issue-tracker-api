@@ -16,7 +16,7 @@ export class IssuesService {
       title: issueDto.title,
       description: issueDto.description,
       status: issueDto.status,
-      authorName: user.name,
+      authorId: user.id,
     }});
 
     return issue;
@@ -51,7 +51,7 @@ export class IssuesService {
       throw new NotFoundException('Issue not found');
     }
 
-    if (user.name !== issue.authorName) {
+    if (user.id !== issue.authorId) {
       throw new ForbiddenException('Only author can update issue');
     }
 
@@ -70,7 +70,7 @@ export class IssuesService {
       throw new NotFoundException('Issue not found');
     }
 
-    if (user.name !== issue.authorName) {
+    if (user.id !== issue.authorId) {
       throw new ForbiddenException('Only author can delete issue');
     }
 

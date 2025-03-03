@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { UserDbDto } from './dto/user-db.dto';
 import { User } from '@prisma/client';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateDisplayNameDto, UpdateTokenDto } from './dto/update-user.dto';
 import { UserProfileDto } from '../../../libs/contract/users/dto/user-profile.dto';
+import { usersProfileSelectOptions } from '@app/contract';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -20,22 +22,34 @@ export class UsersService {
   }
 
   // Update user token in database document.
-  async updateUserToken(user: UpdateUserDto): Promise<User | null> {
+  async updateUserToken(user: UpdateTokenDto): Promise<User | null> {
     const userData = await this.prismaService.user.update({
       where: { name: user.name },
       data: { token: user.token }
     })
+    if (!userData) {
+      throw new InternalServerErrorException('Token update failed');
+    }
     return userData;
+  }
+
+  // Update user display name in database document.
+  async updateUserDisplayName(nameDto: UpdateDisplayNameDto, user: UserEntity) {
+    const userData = await this.prismaService.user.update({
+      where: {name: user.name},
+      data: {displayName: nameDto.displayName}
+    })
+    if (!userData) {
+      throw new InternalServerErrorException('Display name update failed');
+    }
+    return {message: 'Dispay name updated succesfully'};
   }
   
   // Find user document in database and return user profile.
   async getUserProfile(name: string): Promise<UserProfileDto> {
     const profile = await this.prismaService.user.findFirst({
       where: {name},
-      include: {
-        issues: true,
-        comments: true
-      }
+      select: usersProfileSelectOptions
     })
 
     if (!profile) {

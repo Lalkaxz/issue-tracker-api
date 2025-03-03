@@ -17,8 +17,8 @@ export class CommentDto {
     @ApiProperty({ description: "Issue related to the comment", type: IssueDto, required: false })
     @Expose() readonly issue?: IssueDto;
 
-    @ApiProperty({ example: "JohnDoe", description: "Author name" })
-    @Expose() readonly authorName: string;
+    @ApiProperty({ example: "60c72b2f5f1b2c6d88f8a5b4", description: "Author unique id" })
+    @Expose() readonly authorId: string;
 
     @ApiProperty({ description: "Comment author", type: UserProfileDto, required: false })
     @Expose() readonly author?: UserProfileDto;

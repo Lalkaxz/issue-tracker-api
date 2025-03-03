@@ -1,13 +1,16 @@
 model User {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  name       String @unique
-  password   String
-  roles      String[] @default(["user"])
-  issues     Issue[]
-  comments   Comment[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-  token      String @unique
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name        String @unique
+  displayName String 
+
+  password    String
+  roles       String[] @default(["user"])
+  issues      Issue[]
+  comments    Comment[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  token       String @unique
 }
 
 model Issue {
@@ -15,8 +18,8 @@ model Issue {
   title       String
   description String
   status      String @default("open") // open, in-progress, closed
-  authorName  String 
-  author      User     @relation(fields: [authorName], references: [name])
+  authorId    String @db.ObjectId 
+  author      User     @relation(fields: [authorId], references: [id])
   comments    Comment[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
@@ -27,8 +30,8 @@ model Comment {
   text       String
   issueId    String @db.ObjectId
   issue      Issue @relation(fields: [issueId], references: [id])
-  authorName String 
-  author     User  @relation(fields: [authorName], references: [name])
+  authorId   String @db.ObjectId
+  author     User  @relation(fields: [authorId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
 }

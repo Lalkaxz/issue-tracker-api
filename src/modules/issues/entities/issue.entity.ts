@@ -5,7 +5,7 @@ export class IssueEntity {
     readonly title: string;
     readonly description: string;
     readonly status: string;
-    readonly authorName: string;
+    readonly authorId: string;
     readonly createdAt: Date;
     readonly updatedAt: Date;
     readonly author?: User;

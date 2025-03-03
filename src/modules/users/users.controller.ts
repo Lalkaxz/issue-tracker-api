@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards, ClassSerializerInterceptor, UseInterceptors, SerializeOptions } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, ClassSerializerInterceptor, UseInterceptors, SerializeOptions, Post, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/roles/roles.guard';
@@ -11,6 +11,7 @@ import { ApiOperation, ApiOkResponse, ApiNotFoundResponse, ApiBearerAuth, ApiTag
 import { NotFoundResponseDto } from 'src/common/exceptions/dto/error-response.dto';
 import { USERS_CONTROLLER, USERS_ROUTES } from '@app/contract';
 import { ApiDefaultResponses } from 'src/common/decorators/default-response.decorator';
+import { UpdateDisplayNameDto } from './dto/update-user.dto';
 
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -39,5 +40,12 @@ export class UsersController {
   @Get(USERS_ROUTES.GET_BY_NAME)
   getProfile(@Param('name') name: string,): Promise<UserProfileDto> {
     return this.usersService.getUserProfile(name);
+  }
+
+  @Post(USERS_ROUTES.UPDATE_PROFILE)
+  updateProfile(@Body() updateDto: UpdateDisplayNameDto,
+                @User() user: UserEntity    
+  ) {
+    return this.usersService.updateUserDisplayName(updateDto, user);
   }
 }
