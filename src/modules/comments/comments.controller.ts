@@ -14,6 +14,7 @@ import { User } from 'src/common/decorators/users.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { ApiDefaultResponses } from 'src/common/decorators/default-response.decorator';
 import { NotFoundResponseDto } from 'src/common/exceptions/dto/error-response.dto';
+import { ParseObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles([Role.User])
@@ -49,7 +50,7 @@ export class CommentsController {
   @ApiOkResponse({ type: CommentDto, description: "Return issues comment" })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
   @Get(COMMENTS_ROUTES.GET_BY_ID)
-  findOne(@Param('commentId') commentId: string): Promise<CommentDto> {
+  findOne(@Param('commentId', ParseObjectIdPipe) commentId: string): Promise<CommentDto> {
     return this.commentsService.findOne(commentId);
   }
 
@@ -57,7 +58,7 @@ export class CommentsController {
   @ApiOkResponse({ type: CommentDto, description: "Return updated issue comment" })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
   @Put(COMMENTS_ROUTES.UPDATE)
-  update(@Param('commentId') commentId: string,
+  update(@Param('commentId', ParseObjectIdPipe) commentId: string,
          @User() user: UserEntity,
          @Body() updateCommentDto: UpdateCommentDto
     ): Promise<CommentDto> {
@@ -68,7 +69,7 @@ export class CommentsController {
   @ApiOkResponse({ type: CommentDto, description: "Return updated issue comment" })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
   @Delete(COMMENTS_ROUTES.DELETE)
-  remove(@Param('commentId') commentId: string,
+  remove(@Param('commentId', ParseObjectIdPipe) commentId: string,
         @User() user: UserEntity
     ) {
     return this.commentsService.remove(commentId, user);
