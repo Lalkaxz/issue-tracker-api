@@ -1,9 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ADMIN_CONTROLLER, ADMIN_ROUTES, UserProfileDto } from '@app/contract';
+import { ADMIN_CONTROLLER, ADMIN_ROUTES, CommentDto, IssueDto, UserProfileDto } from '@app/contract';
 import { Role } from 'src/common/roles/enums/role.enum';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Roles } from 'src/common/roles/roles.decorator';
@@ -21,16 +19,26 @@ import { DeleteUserDto } from '../users/dto/delete-user.dto';
 @Roles([Role.Admin])
 @ApiBearerAuth()
 @ApiTags('admin')
-@Controller({ host: ADMIN_CONTROLLER})
+@Controller(ADMIN_CONTROLLER)
 export class AdminController {
-  constructor(private readonly adminService: AdminService,
-              private readonly usersService: UsersService
-  ) {}
+  constructor(private readonly adminService: AdminService) {}
 
 
   @Get(ADMIN_ROUTES.GET_ALL_USERS)
-  findAll(): Promise<UserProfileDto[]> {
-    return this.usersService.getAllUsers();
+  findAllUsers() {
+    return this.adminService.getAllUsers();
+  }
+
+
+  @Get(ADMIN_ROUTES.GET_ALL_ISSUES)
+  findAllIssues(): Promise<IssueDto[]> {
+    return this.adminService.getAllIssues();
+  }
+
+
+  @Get(ADMIN_ROUTES.GET_ALL_COMMENTS)
+  findAllComments(): Promise<CommentDto[]> {
+    return this.adminService.getAllComments();
   }
 
 
@@ -55,6 +63,18 @@ export class AdminController {
              @User() user: UserEntity,
              @Body() deleteUserDto: DeleteUserDto
   ) {
-    return this.usersService.deleteUser(id, user, deleteUserDto);
+    return this.adminService.deleteUser(id, user, deleteUserDto);
   }
+
+  @Delete(ADMIN_ROUTES.DELETE_ISSUE)
+  removeIssue(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.adminService.deleteIssue(id);
+  }
+  
+
+  @Delete(ADMIN_ROUTES.DELETE_COMMENT)
+  removeComment(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.adminService.deleteComment(id);
+  }
+
 }

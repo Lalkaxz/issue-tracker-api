@@ -1,13 +1,14 @@
 import { Injectable, CanActivate, ExecutionContext, BadRequestException, UnauthorizedException, InternalServerErrorException, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { UsersService } from 'src/modules/users/users.service';
+import { PrismaService } from 'src/core/prisma/prisma.service';
 
 /** Guard for user authentication. Cancell route call if user unauthorized. */
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-    constructor(private readonly usersService: UsersService,
-                private readonly jwtService: JwtService) {}
+    constructor(private readonly jwtService: JwtService,
+                private readonly prismaService: PrismaService
+    ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<Request>();
@@ -22,7 +23,9 @@ export class JwtAuthGuard implements CanActivate {
         const { sub: username } = payload;
         
         // Get user from name and set it to request.
-        const user = await this.usersService.findUserByName(username);
+        const user = await this.prismaService.user.findFirst({where: {
+            name: username
+        }});
         if (!user) {
             throw new UnauthorizedException("User is unauthorized");
         }

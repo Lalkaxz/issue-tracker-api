@@ -12,6 +12,7 @@ import { exceptionFilter } from 'src/core/logger/http-exception.filter';
 import { IS_DEV_ENV } from './common/utils/is-dev.util';
 import { PrismaMiddleware } from './common/middlewares/prisma.middleware';
 import { COMMENTS_CONTROLLER } from '@app/contract';
+import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
@@ -30,8 +31,17 @@ import { COMMENTS_CONTROLLER } from '@app/contract';
       isGlobal: true,
       load: [configuration],
       ignoreEnvFile: !IS_DEV_ENV
-    })
+    }),
+    JwtModule.registerAsync({
+      global: true,
+      imports: [ConfigModule], 
+      inject: [ConfigService], 
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.getOrThrow<string>('JWT_SECRET') 
+      }),
+    }),
   ],
+  exports: [JwtModule],
   providers: [
     exceptionFilter
   ],

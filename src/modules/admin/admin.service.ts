@@ -1,13 +1,31 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
-import { Prisma, User } from '@prisma/client';
+import { Comment, Issue, Prisma, User } from '@prisma/client';
 import { UpdateUserRoleDto } from '../users/dto/update-user.dto';
+import { validatePasswords } from 'src/common/utils/compare-passwords.util';
+import { DeleteUserDto } from '../users/dto/delete-user.dto';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Injectable()
 export class AdminService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  // Update user roles.
+  /* Get functions for resources. Without serialization. With credentials. */
+  async getAllUsers(): Promise<User[]> {
+    return await this.prismaService.user.findMany();
+  }
+
+
+  async getAllIssues(): Promise<Issue[]> {
+    return await this.prismaService.issue.findMany();
+  }
+
+
+  async getAllComments(): Promise<Comment[]> {
+    return await this.prismaService.comment.findMany();
+  }
+
+  // Change array in 'roles' field in database document.
   async updateUserRole(id: string, roleDto: UpdateUserRoleDto): Promise<User> {
     const user = await this.prismaService.user.findUnique({where: {id}});
     if (!user) {
@@ -49,4 +67,47 @@ export class AdminService {
       data: deactivateUserData
     });
   }
+
+
+  // Delete user document in database by id. Return boolean value.
+  async deleteUser(id: string,
+                  user: UserEntity,
+                  deleteUserDto: DeleteUserDto
+    ) {
+    const match = await validatePasswords(deleteUserDto.password, user.password);
+    if (!match) {
+      throw new BadRequestException("Incorrect password");
+    }
+
+    if (user.id === id) {
+      throw new ForbiddenException(`You cant delete yourself`)
+    }
+
+    const succesfully = await this.prismaService.user.delete({where: {id}});
+    if (!succesfully) {
+      throw new InternalServerErrorException('Delete user failed');
+    }
+
+    return {message: 'User deleted succesfully'};
+    }
+
+  async deleteIssue(id: string) {
+    const succesfully = await this.prismaService.issue.delete({where: {id}});
+    if (!succesfully) {
+        throw new InternalServerErrorException('Delete issue failed');
+    }
+    
+    return {message: 'Issue deleted succesfully'};
+  }
+  
+
+  async deleteComment(id: string) {
+    const succesfully = await this.prismaService.comment.delete({where: {id}});
+    if (!succesfully) {
+        throw new InternalServerErrorException('Delete comment failed');
+    }
+    
+    return {message: 'Issue comment deleted succesfully'};
+  }
+
 }

@@ -7,14 +7,9 @@ import { IssuesModule } from 'src/modules/issues/issues.module';
 
 @Module({
   imports: [
-    forwardRef(() => UsersModule),
-    forwardRef(() => IssuesModule),
-    JwtModule.register({
-      secret: process.env.SECRET 
-    })
+    UsersModule
   ],
   controllers: [AuthController],
   providers: [AuthService],
-  exports: [JwtModule]
 })
 export class AuthModule {}
