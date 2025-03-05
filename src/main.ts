@@ -34,6 +34,8 @@ async function bootstrap() {
 
   createSwagger(app);
 
+  app.enableCors({ origin: config.getOrThrow<string>("ALLOWED_ORIGIN") })
+
   app.useGlobalInterceptors(new LoggingInterceptor(logger));
   app.useGlobalPipes(new ValidationPipe());
 

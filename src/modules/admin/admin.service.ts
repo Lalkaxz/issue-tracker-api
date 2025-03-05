@@ -5,10 +5,15 @@ import { UpdateUserRoleDto } from '../users/dto/update-user.dto';
 import { validatePasswords } from 'src/common/utils/compare-passwords.util';
 import { DeleteUserDto } from '../users/dto/delete-user.dto';
 import { UserEntity } from '../users/entities/user.entity';
+import { IssuesGateway } from '../websocket/issues.gateway';
+import { CommentsGateway } from '../websocket/comments.gateway';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService,
+              private readonly issuesGateway: IssuesGateway,
+              private readonly commentsGateway: CommentsGateway
+  ) {}
 
   /* Get functions for resources. Without serialization. With credentials. */
   async getAllUsers(): Promise<User[]> {
@@ -92,20 +97,18 @@ export class AdminService {
     }
 
   async deleteIssue(id: string) {
-    const succesfully = await this.prismaService.issue.delete({where: {id}});
-    if (!succesfully) {
-        throw new InternalServerErrorException('Delete issue failed');
-    }
+    const deletedIssue = await this.prismaService.issue.delete({where: {id}});
+
+    this.issuesGateway.emitIssueDeleted(deletedIssue);
     
     return {message: 'Issue deleted succesfully'};
   }
   
 
   async deleteComment(id: string) {
-    const succesfully = await this.prismaService.comment.delete({where: {id}});
-    if (!succesfully) {
-        throw new InternalServerErrorException('Delete comment failed');
-    }
+    const deletedComment = await this.prismaService.comment.delete({where: {id}});
+    
+    this.commentsGateway.emitCommentDeleted(deletedComment);
     
     return {message: 'Issue comment deleted succesfully'};
   }

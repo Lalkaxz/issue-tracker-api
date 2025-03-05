@@ -13,6 +13,7 @@ import { IS_DEV_ENV } from './common/utils/is-dev.util';
 import { PrismaMiddleware } from './common/middlewares/prisma.middleware';
 import { COMMENTS_CONTROLLER } from '@app/contract';
 import { JwtModule } from '@nestjs/jwt';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 
 
 @Module({
@@ -22,6 +23,7 @@ import { JwtModule } from '@nestjs/jwt';
     UsersModule, 
     AuthModule, 
     AdminModule,
+    WebsocketModule,
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

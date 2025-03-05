@@ -1,17 +1,17 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { IssuesService } from './issues.service';
 import { IssuesController } from './issues.controller';
 import { CommentsModule } from '../comments/comments.module';
-import { AuthModule } from 'src/modules/auth/auth.module';
 import { UsersModule } from 'src/modules/users/users.module';
-import { JwtModule } from '@nestjs/jwt';
+import { WebsocketModule } from '../websocket/websocket.module';
 
 @Module({
   controllers: [IssuesController],
   providers: [IssuesService],
   imports: [
     UsersModule,
-    CommentsModule
+    CommentsModule,
+    WebsocketModule
   ],
   exports: [IssuesService]
 })

@@ -6,18 +6,25 @@ import { IssueEntity } from '../issues/entities/issue.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { CommentDto } from '@app/contract';
 import { commentsIncludeOptions } from '@app/contract';
+import { CommentsGateway } from '../websocket/comments.gateway';
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService,
+              private readonly commentsGateway: CommentsGateway
+  ) {}
 
   // Create new issue comment document and return it.
   async create(commentDto: CreateCommentDto, issue: IssueEntity, user: UserEntity) {
-    return await this.prismaService.comment.create({data: {
+    const comment = await this.prismaService.comment.create({data: {
       text: commentDto.text,
       issueId: issue.id,
       authorId: user.id
     }});
+
+    this.commentsGateway.emitCommentCreated(comment);
+
+    return comment;
   }
 
   // Return array of issue comments. Supports limit items.
@@ -58,6 +65,9 @@ export class CommentsService {
       where: {id},
       data: updateCommentDto
     });
+
+    this.commentsGateway.emitCommentUpdated(updatedComment);
+
     return updatedComment;
   }
 
@@ -73,9 +83,11 @@ export class CommentsService {
       throw new ForbiddenException('Only author can delete comment');
     }
 
-    await this.prismaService.comment.delete({
+    const deletedComment = await this.prismaService.comment.delete({
       where: {id}
     });
+
+    this.commentsGateway.emitCommentDeleted(deletedComment);
 
     return { message: 'Issue comment deleted successfully' };
   }

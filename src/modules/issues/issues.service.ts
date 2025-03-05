@@ -5,10 +5,13 @@ import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { Issue } from '@prisma/client';
 import { issuesIncludeOptions } from '@app/contract';
+import { IssuesGateway } from '../websocket/issues.gateway';
 
 @Injectable()
 export class IssuesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService,
+              private readonly issuesGateway: IssuesGateway
+  ) {}
  
   // Create new issue document in database and return it.
   async create(issueDto: CreateIssueDto, user: UserEntity): Promise<Issue> {
@@ -18,6 +21,8 @@ export class IssuesService {
       status: issueDto.status,
       authorId: user.id,
     }});
+
+    this.issuesGateway.emitIssueCreated(issue);
 
     return issue;
   }
@@ -55,10 +60,13 @@ export class IssuesService {
       throw new ForbiddenException('Only author can update issue');
     }
 
-    const updatedIssue = this.prismaService.issue.update({
+    const updatedIssue = await this.prismaService.issue.update({
       where: {id},
       data: updateIssueDto
     });
+
+    this.issuesGateway.emitIssueUpdated(updatedIssue);
+
     return updatedIssue;
   }
 
@@ -74,9 +82,12 @@ export class IssuesService {
       throw new ForbiddenException('Only author can delete issue');
     }
 
-    await this.prismaService.issue.delete({
+    const deletedIssue = await this.prismaService.issue.delete({
       where: {id}
     });
+
+    this.issuesGateway.emitIssueDeleted(deletedIssue);
+
     return { message: 'Issue deleted successfully' };
     
   }
