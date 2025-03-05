@@ -1,7 +1,5 @@
 import { Controller, Get, Param, UseGuards, ClassSerializerInterceptor, UseInterceptors, SerializeOptions, Post, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/roles/roles.guard';
 import { Roles } from 'src/common/roles/roles.decorator';
 import { Role } from 'src/common/roles/enums/role.enum';
 import { User } from '../../common/decorators/users.decorator';
@@ -12,11 +10,12 @@ import { NotFoundResponseDto } from 'src/common/exceptions/dto/error-response.dt
 import { USERS_CONTROLLER, USERS_ROUTES } from '@app/contract';
 import { ApiDefaultResponses } from 'src/common/decorators/default-response.decorator';
 import { UpdateDisplayNameDto } from './dto/update-user.dto';
+import { Authorization } from 'src/common/decorators/auth.decorator';
 
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@UseInterceptors(ClassSerializerInterceptor)
+@Authorization()
 @Roles([Role.User])
+@UseInterceptors(ClassSerializerInterceptor)
 @ApiBearerAuth()
 @ApiTags('users')
 @ApiDefaultResponses()

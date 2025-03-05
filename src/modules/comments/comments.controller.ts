@@ -1,9 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, Query } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/roles/roles.guard';
 import { Roles } from 'src/common/roles/roles.decorator';
 import { Role } from 'src/common/roles/enums/role.enum';
 import { ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -15,8 +13,9 @@ import { UserEntity } from '../users/entities/user.entity';
 import { ApiDefaultResponses } from 'src/common/decorators/default-response.decorator';
 import { NotFoundResponseDto } from 'src/common/exceptions/dto/error-response.dto';
 import { ParseObjectIdPipe } from 'src/common/pipes/object-id.pipe';
+import { Authorization } from 'src/common/decorators/auth.decorator';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+@Authorization()
 @Roles([Role.User])
 @ApiBearerAuth()
 @ApiTags('comments')

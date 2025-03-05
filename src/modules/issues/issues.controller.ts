@@ -10,12 +10,11 @@ import { Role } from 'src/common/roles/enums/role.enum';
 import { ParseObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 import { IssueDto } from '@app/contract';
 import { ISSUES_CONTROLLER, ISSUES_ROUTES } from '@app/contract';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Roles } from 'src/common/roles/roles.decorator';
-import { RolesGuard } from 'src/common/roles/roles.guard';
 import { ApiDefaultResponses } from 'src/common/decorators/default-response.decorator';
+import { Authorization } from 'src/common/decorators/auth.decorator';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+@Authorization()
 @Roles([Role.User])
 @ApiBearerAuth()
 @ApiTags('issues')

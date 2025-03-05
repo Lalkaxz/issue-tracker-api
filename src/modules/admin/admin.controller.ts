@@ -1,21 +1,20 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ADMIN_CONTROLLER, ADMIN_ROUTES, CommentDto, IssueDto, UserProfileDto } from '@app/contract';
+import { ADMIN_CONTROLLER, ADMIN_ROUTES, CommentDto, IssueDto } from '@app/contract';
 import { Role } from 'src/common/roles/enums/role.enum';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { Roles } from 'src/common/roles/roles.decorator';
-import { RolesGuard } from 'src/common/roles/roles.guard';
-import { UsersService } from '../users/users.service';
+import { AdminOnly, Roles } from 'src/common/roles/roles.decorator';
 import { ParseObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 import { UpdateUserRoleDto } from '../users/dto/update-user.dto';
 import { DeactivateUserDto } from '../users/dto/deactivate-user.dto';
 import { User } from 'src/common/decorators/users.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { DeleteUserDto } from '../users/dto/delete-user.dto';
+import { Authorization } from 'src/common/decorators/auth.decorator';
 
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+@Authorization()
+@AdminOnly()
 @Roles([Role.Admin])
 @ApiBearerAuth()
 @ApiTags('admin')

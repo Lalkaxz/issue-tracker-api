@@ -8,7 +8,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { User } from 'src/common/decorators/users.decorator';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { AUTH_CONTROLLER, AUTH_ROUTES } from '@app/contract';
-import { JwtAuthorization } from 'src/common/decorators/auth.decorator';
+import { Authorization } from 'src/common/decorators/auth.decorator';
 import { ApiDefaultResponses } from 'src/common/decorators/default-response.decorator';
 
 @ApiBearerAuth()
@@ -40,7 +40,7 @@ export class AuthController {
   }
   
 
-  @JwtAuthorization()
+  @Authorization()
   @ApiOperation({ summary: "Refresh and return new user token" })
   @ApiDefaultResponses()
   @ApiBody({ type: RefreshTokenDto })

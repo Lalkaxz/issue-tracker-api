@@ -1,13 +1,17 @@
 import { Injectable, CanActivate, ExecutionContext, BadRequestException, UnauthorizedException, InternalServerErrorException, ForbiddenException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { PrismaService } from 'src/core/prisma/prisma.service';
+import { Role } from '../roles/enums/role.enum';
+import { ROLES_KEY } from '../roles/roles.decorator';
 
 /** Guard for user authentication. Cancell route call if user unauthorized. */
 @Injectable()
-export class JwtAuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
     constructor(private readonly jwtService: JwtService,
-                private readonly prismaService: PrismaService
+                private readonly prismaService: PrismaService,
+                private readonly reflector: Reflector
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -40,6 +44,16 @@ export class JwtAuthGuard implements CanActivate {
         }
 
         request.user = user;
+
+        const roles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
+        if (!roles || roles.length === 0) {
+            return true;
+        }
+
+        // Compare allowed roles and user roles, resolve request if user has allowed roles.
+        if (!roles.some((role) => user.roles.includes(role))) {
+            return false;
+        };
 
         return true;
     }
