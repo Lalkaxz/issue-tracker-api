@@ -7,12 +7,14 @@ import { DeleteUserDto } from '../users/dto/delete-user.dto';
 import { UserEntity } from '../users/entities/user.entity';
 import { IssuesGateway } from '../websocket/issues.gateway';
 import { CommentsGateway } from '../websocket/comments.gateway';
+import { ProjectsGateway } from '../websocket/projects.gateway';
 
 @Injectable()
 export class AdminService {
   constructor(private readonly prismaService: PrismaService,
               private readonly issuesGateway: IssuesGateway,
-              private readonly commentsGateway: CommentsGateway
+              private readonly commentsGateway: CommentsGateway,
+              private readonly projectGateway: ProjectsGateway
   ) {}
 
   /* Get functions for resources. Without serialization. With credentials. */
@@ -95,6 +97,16 @@ export class AdminService {
 
     return {message: 'User deleted succesfully'};
     }
+
+
+  async deleteProject(id: string) {
+    const deletedProject = await this.prismaService.project.delete({where: {id}});
+
+    this.projectGateway.emitProjectDeleted(deletedProject);
+
+    return {message: 'Project deleted succesfully'};
+  }
+
 
   async deleteIssue(id: string) {
     const deletedIssue = await this.prismaService.issue.delete({where: {id}});

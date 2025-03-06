@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Comment, Issue } from "@prisma/client";
+import { Comment, Issue, Project } from "@prisma/client";
 import { Exclude, Expose } from "class-transformer";
 
 @Exclude()
@@ -22,6 +22,9 @@ export class UserProfileDto {
     @ApiProperty({ default: [], description: "User issues", required: false })
     @Expose() readonly issues?: Issue[]
 
+    @ApiProperty({ default: [], description: "User projects", required: false })
+    @Expose() readonly projects?: Project[]
+
     @ApiProperty({ type: Date, description: "User creation date", example: "2025-02-26T12:00:00.000Z" })
     @Expose() readonly createdAt: Date;
 
@@ -29,5 +32,5 @@ export class UserProfileDto {
     @Expose() readonly isDeactivated: boolean;
 
     @ApiProperty({ type: Date, description: "User deactivation date", example: "2025-02-26T12:00:00.000Z", required: false})
-    @Expose() readonly deactivatedAt?: Date | null;
+    @Expose() readonly deactivatedAt: Date | null;
 }

@@ -3,26 +3,49 @@ model User {
 
   name        String @unique
   displayName String 
-
   password    String
   roles       String[] @default(["user"])
+
   issues      Issue[]
   comments    Comment[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
+  projects    Project[]
+
   token       String @unique
 
   isDeactivated Boolean @default(false)
   deactivatedAt DateTime? 
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
 }
+
+model Project {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  description String?
+  repoUrl   String  @unique
+  ownerId   String  @db.ObjectId
+  owner     User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  issues    Issue[] 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
 
 model Issue {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
   status      String @default("open") // open, in-progress, closed
+
   authorId    String @db.ObjectId 
-  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author      User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  projectId   String  @db.ObjectId
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   comments    Comment[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
@@ -32,7 +55,7 @@ model Comment {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   text       String
   issueId    String @db.ObjectId
-  issue      Issue @relation(fields: [issueId], references: [id])
+  issue      Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
   authorId   String @db.ObjectId
   author     User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())

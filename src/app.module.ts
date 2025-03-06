@@ -14,6 +14,7 @@ import { PrismaMiddleware } from './common/middlewares/prisma.middleware';
 import { COMMENTS_CONTROLLER } from '@app/contract';
 import { JwtModule } from '@nestjs/jwt';
 import { WebsocketModule } from './modules/websocket/websocket.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 
 @Module({
@@ -24,6 +25,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
     AuthModule, 
     AdminModule,
     WebsocketModule,
+    ProjectsModule,
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,7 +33,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
+      load: IS_DEV_ENV ? [configuration] : undefined,
       ignoreEnvFile: !IS_DEV_ENV
     }),
     JwtModule.registerAsync({
@@ -50,6 +52,6 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(PrismaMiddleware).forRoutes(COMMENTS_CONTROLLER);
+    consumer.apply(PrismaMiddleware).forRoutes('*');
   }
 }

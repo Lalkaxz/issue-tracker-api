@@ -16,6 +16,7 @@ export const usersProfileSelectOptions: Prisma.UserSelect = {
     displayName: true,
     roles: true,
     issues: true,
+    projects: true,
     comments: true,
     createdAt: true,
     isDeactivated: true,

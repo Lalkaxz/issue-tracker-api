@@ -11,5 +11,8 @@ export * from './comments/comments.controller';
 export * from './comments/dto/comment.dto';
 export * from './comments/comments.query';
 export * from './comments/comments.gateway';
-
+export * from './projects/dto/project.dto';
+export * from './projects/projects.controller';
+export * from './projects/projects.gateway';
+export * from './projects/projects.query';
 

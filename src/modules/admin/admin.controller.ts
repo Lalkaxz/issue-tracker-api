@@ -42,7 +42,7 @@ export class AdminController {
 
 
   @Patch(ADMIN_ROUTES.UPDATE_USER_ROLE)
-  updateUserRole(@Param('id', ParseObjectIdPipe) id: string,
+  updateUserRole(@Param('userId', ParseObjectIdPipe) id: string,
                  @Body() updateAdminDto: UpdateUserRoleDto
     ) {
     return this.adminService.updateUserRole(id, updateAdminDto);
@@ -50,7 +50,7 @@ export class AdminController {
 
 
   @Patch(ADMIN_ROUTES.DEACTIVATE_USER)
-  deactivateUser(@Param('id', ParseObjectIdPipe) id: string,
+  deactivateUser(@Param('userId', ParseObjectIdPipe) id: string,
                  @Body() deactivateUserDto: DeactivateUserDto
   ) {
     return this.adminService.deactivateUser(id, deactivateUserDto.isDeactivated);
@@ -58,21 +58,28 @@ export class AdminController {
 
 
   @Delete(ADMIN_ROUTES.DELETE_USER)
-  removeUser(@Param('id', ParseObjectIdPipe) id: string,
+  removeUser(@Param('userId', ParseObjectIdPipe) id: string,
              @User() user: UserEntity,
              @Body() deleteUserDto: DeleteUserDto
   ) {
     return this.adminService.deleteUser(id, user, deleteUserDto);
   }
 
+
+  @Delete(ADMIN_ROUTES.DELETE_PROJECT)
+  removeProject(@Param('projectId', ParseObjectIdPipe) id: string) {
+    return this.adminService.deleteProject(id);
+  }
+
+
   @Delete(ADMIN_ROUTES.DELETE_ISSUE)
-  removeIssue(@Param('id', ParseObjectIdPipe) id: string) {
+  removeIssue(@Param('issueId', ParseObjectIdPipe) id: string) {
     return this.adminService.deleteIssue(id);
   }
   
 
   @Delete(ADMIN_ROUTES.DELETE_COMMENT)
-  removeComment(@Param('id', ParseObjectIdPipe) id: string) {
+  removeComment(@Param('commentId', ParseObjectIdPipe) id: string) {
     return this.adminService.deleteComment(id);
   }
 

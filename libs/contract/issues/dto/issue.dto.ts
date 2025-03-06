@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Comment } from "@prisma/client";
 import { Exclude, Expose } from "class-transformer";
+import { ProjectDto } from "libs/contract/projects/dto/project.dto";
 import { UserProfileDto } from "libs/contract/users/dto/user-profile.dto";
 
 @Exclude()
@@ -22,6 +23,12 @@ export class IssueDto {
 
     @ApiProperty({ description: "Issue author", default: {} })
     @Expose() readonly author?: UserProfileDto;
+
+    @ApiProperty({ example: "67bf22e2e27481030b2053dd", description: "Project unique id"})
+    @Expose() readonly projectId: string;
+
+    @ApiProperty({ description: "Project of the issue", default: {} })
+    @Expose() readonly project?: ProjectDto;
   
     @ApiProperty({ description: "Issue comments", default: [] })
     @Expose() readonly comments?: Comment[];

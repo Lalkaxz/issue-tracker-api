@@ -4,7 +4,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Roles } from 'src/common/roles/roles.decorator';
 import { Role } from 'src/common/roles/enums/role.enum';
-import { ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CommentDto, COMMENTS_CONTROLLER, COMMENTS_ROUTES } from '@app/contract';
 import { Issue } from 'src/common/decorators/issues.decorator';
 import { IssueEntity } from '../issues/entities/issue.entity';
@@ -27,6 +27,7 @@ export class CommentsController {
   
   @ApiOperation({ summary: "Create and return new issue comment"})
   @ApiCreatedResponse({ type: CommentDto, description: "Return created issue comment" })
+  @ApiParam({ name: 'issueId', type: String, description: 'Issue id' })
   @Post(COMMENTS_ROUTES.CREATE)
   create(@Body() createCommentDto: CreateCommentDto,
          @Issue() issue: IssueEntity,
@@ -38,6 +39,8 @@ export class CommentsController {
 
   @ApiOperation({ summary: "Return all issues comments"})
   @ApiOkResponse({ type: [CommentDto], description: "Return issues comments array" })
+  @ApiParam({ name: 'issueId', type: String, description: 'Issue id' })
+  @ApiQuery({ name: 'limit', type: Number, required: false})
   @Get(COMMENTS_ROUTES.GET_ALL)
   findAll(@Issue() issue: IssueEntity,
           @Query('limit', new ParseIntPipe({optional: true})) limit?: number
@@ -47,6 +50,7 @@ export class CommentsController {
 
   @ApiOperation({ summary: "Return issue comment by id"})
   @ApiOkResponse({ type: CommentDto, description: "Return issues comment" })
+  @ApiParam({ name: 'issueId', type: String, description: 'Issue id' })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
   @Get(COMMENTS_ROUTES.GET_BY_ID)
   findOne(@Param('commentId', ParseObjectIdPipe) commentId: string): Promise<CommentDto> {
@@ -55,6 +59,7 @@ export class CommentsController {
 
   @ApiOperation({ summary: "Update issue comment"})
   @ApiOkResponse({ type: CommentDto, description: "Return updated issue comment" })
+  @ApiParam({ name: 'issueId', type: String, description: 'Issue id' })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
   @Put(COMMENTS_ROUTES.UPDATE)
   update(@Param('commentId', ParseObjectIdPipe) commentId: string,
@@ -66,6 +71,7 @@ export class CommentsController {
 
   @ApiOperation({ summary: "Update issue comment"})
   @ApiOkResponse({ type: CommentDto, description: "Return updated issue comment" })
+  @ApiParam({ name: 'issueId', type: String, description: 'Issue id' })
   @ApiNotFoundResponse({ type: NotFoundResponseDto, description: "Not found"})
   @Delete(COMMENTS_ROUTES.DELETE)
   remove(@Param('commentId', ParseObjectIdPipe) commentId: string,

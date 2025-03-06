@@ -14,11 +14,12 @@ export class IssuesService {
   ) {}
  
   // Create new issue document in database and return it.
-  async create(issueDto: CreateIssueDto, user: UserEntity): Promise<Issue> {
+  async create(issueDto: CreateIssueDto, user: UserEntity, projectId: string): Promise<Issue> {
     const issue = await this.prismaService.issue.create({data: {
       title: issueDto.title,
       description: issueDto.description,
       status: issueDto.status,
+      projectId: projectId,
       authorId: user.id,
     }});
 
@@ -28,8 +29,11 @@ export class IssuesService {
   }
 
   // Return array of issues. Supports limit items.
-  async findAll(limit?: number): Promise<Issue[]> {
-    const issues = await this.prismaService.issue.findMany({ take: limit });
+  async findAll(projectId: string, limit?: number): Promise<Issue[]> {
+    const issues = await this.prismaService.issue.findMany({
+      where: {projectId},
+      take: limit 
+    });
     return issues;
   }
 

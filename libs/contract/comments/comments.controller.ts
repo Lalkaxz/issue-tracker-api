@@ -1,4 +1,4 @@
-export const COMMENTS_CONTROLLER = 'issues/:id/comments' as const;
+export const COMMENTS_CONTROLLER = 'issues/:issueId/comments' as const;
 
 export const COMMENTS_ROUTES = {
   CREATE: '',

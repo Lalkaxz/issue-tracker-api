@@ -1,5 +1,6 @@
-import { createParamDecorator, ExecutionContext, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, createParamDecorator, ExecutionContext, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { Request } from "express";
+import { Types } from "mongoose";
 import { PrismaService } from "src/core/prisma/prisma.service";
 import { IssueEntity } from "src/modules/issues/entities/issue.entity";
 
@@ -10,9 +11,13 @@ export const Issue = createParamDecorator(
             throw new InternalServerErrorException(`'PrismaService' not provided in Request`)
         }
         const prismaService: PrismaService = request.prisma;
-        const issueId = request.params.id;
+        const issueId = request.params.issueId;
         if (!issueId) {
             throw new InternalServerErrorException(`Issue ID not provided in the URL.`);
+        }
+
+        if (!Types.ObjectId.isValid(issueId)) {
+            throw new BadRequestException('Invalid issueId');
         }
 
         const issue = await prismaService.issue.findUnique({ where: {id: issueId} })

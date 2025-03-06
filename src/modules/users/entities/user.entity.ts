@@ -1,4 +1,4 @@
-import { Issue, Comment } from "@prisma/client";
+import { Issue, Comment, Project } from "@prisma/client";
 
 export type UserEntity = {
     readonly id: string;
@@ -11,6 +11,7 @@ export type UserEntity = {
     readonly updatedAt: Date;
     readonly issues?: Issue[];
     readonly comments?: Comment[];
+    readonly projects?: Project[];
     readonly isDeactivated: boolean;
-    readonly deactivatedAt?: Date | null;
+    readonly deactivatedAt: Date | null;
 }

@@ -23,7 +23,7 @@ export class ForbiddenResponseDto {
   readonly error: string;
 }
 
-export class UnauthorizdResponseDto {
+export class UnauthorizedResponseDto {
   @ApiProperty({ example: 401 })
   readonly statusCode: number;
 
