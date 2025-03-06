@@ -11,10 +11,11 @@ import { optionsFactory } from 'src/core/config/logger.config';
 import { exceptionFilter } from 'src/core/logger/http-exception.filter';
 import { IS_DEV_ENV } from './common/utils/is-dev.util';
 import { PrismaMiddleware } from './common/middlewares/prisma.middleware';
-import { COMMENTS_CONTROLLER } from '@app/contract';
 import { JwtModule } from '@nestjs/jwt';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { cacheFactory } from './core/config/redis.config';
 
 
 @Module({
@@ -35,6 +36,12 @@ import { ProjectsModule } from './modules/projects/projects.module';
       isGlobal: true,
       load: IS_DEV_ENV ? [configuration] : undefined,
       ignoreEnvFile: !IS_DEV_ENV
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: cacheFactory
     }),
     JwtModule.registerAsync({
       global: true,

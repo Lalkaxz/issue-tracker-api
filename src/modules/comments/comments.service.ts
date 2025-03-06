@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaService } from 'src/core/prisma/prisma.service';
@@ -7,11 +7,15 @@ import { UserEntity } from '../users/entities/user.entity';
 import { CommentDto } from '@app/contract';
 import { commentsIncludeOptions } from '@app/contract';
 import { CommentsGateway } from '../websocket/comments.gateway';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Comment } from '@prisma/client';
 
 @Injectable()
 export class CommentsService {
   constructor(private readonly prismaService: PrismaService,
-              private readonly commentsGateway: CommentsGateway
+              private readonly commentsGateway: CommentsGateway,
+              @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   // Create new issue comment document and return it.
@@ -29,10 +33,17 @@ export class CommentsService {
 
   // Return array of issue comments. Supports limit items.
   async findAll(issueId: string, limit?: number): Promise<CommentDto[]> {
+    const cachedComments = await this.cacheManager.get<Comment[]>('comments');
+    if (cachedComments) {
+      return cachedComments;
+    }
+
     const comments = await this.prismaService.comment.findMany({
       where: {issueId},
       take: limit
     });
+    await this.cacheManager.set('comments', comments);
+
     return comments;
   }
 

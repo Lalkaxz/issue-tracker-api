@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
@@ -6,11 +6,14 @@ import { PrismaService } from 'src/core/prisma/prisma.service';
 import { Issue } from '@prisma/client';
 import { issuesIncludeOptions } from '@app/contract';
 import { IssuesGateway } from '../websocket/issues.gateway';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class IssuesService {
   constructor(private readonly prismaService: PrismaService,
-              private readonly issuesGateway: IssuesGateway
+              private readonly issuesGateway: IssuesGateway,
+              @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
  
   // Create new issue document in database and return it.
@@ -30,10 +33,17 @@ export class IssuesService {
 
   // Return array of issues. Supports limit items.
   async findAll(projectId: string, limit?: number): Promise<Issue[]> {
+    const cachedIssues = await this.cacheManager.get<Issue[]>('issues');
+    if (cachedIssues) {
+      return cachedIssues;
+    }
+
     const issues = await this.prismaService.issue.findMany({
       where: {projectId},
       take: limit 
     });
+    await this.cacheManager.set('issues', issues);
+
     return issues;
   }
 

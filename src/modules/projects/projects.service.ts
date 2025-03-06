@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { PrismaService } from 'src/core/prisma/prisma.service';
@@ -8,11 +8,14 @@ import { UserEntity } from '../users/entities/user.entity';
 import { Project } from '@prisma/client';
 import { projectsIncludeOptions } from '@app/contract';
 import { ProjectEntity } from './entities/project.entity';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class ProjectsService {
   constructor(private readonly prismaService: PrismaService,
-              private readonly projectGateway: ProjectsGateway
+              private readonly projectGateway: ProjectsGateway,
+              @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async create(projectDto: CreateProjectDto, user: UserEntity): Promise<Project> {
@@ -47,7 +50,14 @@ export class ProjectsService {
 
   // Return projects array. Supports limit parameter.
   async findAll(limit?: number): Promise<Project[]> {
+    const cachedProjects = await this.cacheManager.get<Project[]>('projects')
+    if (cachedProjects) {
+      return cachedProjects;
+    }
+
     const projects = await this.prismaService.project.findMany({ take: limit });
+    await this.cacheManager.set('projects', projects);
+
     return projects;
   }
 

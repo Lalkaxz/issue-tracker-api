@@ -7,7 +7,6 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { PinoLogger } from 'nestjs-pino';
 import { LoggingInterceptor } from './core/logger/logging.interceptor';
 
-
 function createSwagger(app: INestApplication): void {
   const swaggerConfig = new DocumentBuilder()
         .setTitle('Issue Tracker API')
