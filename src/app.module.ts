@@ -16,6 +16,9 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { cacheFactory } from './core/config/redis.config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { throttlerFactory } from './core/config/throttler.config';
+import { APP_GUARD } from '@nestjs/core';
 
 
 @Module({
@@ -43,6 +46,11 @@ import { cacheFactory } from './core/config/redis.config';
       inject: [ConfigService],
       useFactory: cacheFactory
     }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: throttlerFactory
+    }),
     JwtModule.registerAsync({
       global: true,
       imports: [ConfigModule], 
@@ -54,7 +62,11 @@ import { cacheFactory } from './core/config/redis.config';
   ],
   exports: [JwtModule],
   providers: [
-    exceptionFilter
+    exceptionFilter,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    }
   ],
 })
 export class AppModule implements NestModule {

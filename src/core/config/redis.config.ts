@@ -1,10 +1,11 @@
 import { CacheOptions } from "@nestjs/cache-manager";
 import { ConfigService } from "@nestjs/config";
+import { seconds } from "@nestjs/throttler";
 import { redisStore } from "cache-manager-redis-yet";
 
 export const cacheFactory = async (config: ConfigService): Promise<CacheOptions> => {
     const store = await redisStore({
-        ttl: config.getOrThrow<number>('REDIS_TTL') * 1000,
+        ttl: seconds(config.getOrThrow<number>('REDIS_TTL')),
         socket: {
             host: config.getOrThrow<string>('REDIS_HOST'),
             port: config.getOrThrow<number>('REDIS_PORT'),
@@ -12,7 +13,7 @@ export const cacheFactory = async (config: ConfigService): Promise<CacheOptions>
     })
 
     const options: CacheOptions = {
-        ttl: config.getOrThrow<number>('REDIS_TTL') * 1000,
+        ttl: seconds(config.getOrThrow<number>('REDIS_TTL')),
         stores: [store],
     }
     return options;
