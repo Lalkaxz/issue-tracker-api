@@ -1,0 +1,72 @@
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: issue-tracker-api
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      JWT_SECRET: '021bfbbec46232bafc73ec0e904c4d34e94086afcadba9095d1829395e9055ce'
+      NODE_ENV: 'production'
+      ALLOWED_ORIGIN: '*'
+
+      HOST: '0.0.0.0'
+      PORT: '3000'
+      PREFIX: '/api'
+
+      MONGO_USER: 'lalkaxz'
+      MONGO_PASSWORD: '34bAQjfC8YQ9uGWx'
+      MONGO_HOST: 'mongo'
+      MONGO_DATABASE: 'Cluster0'
+      MONGO_URL: "mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DATABASE}"
+
+      THROTTLE_TTL: 60
+      THROTTLE_LIMIT: 10
+
+      REDIS_TTL: 60
+      REDIS_HOST: 'redis'
+      REDIS_PORT: '6379'
+
+
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - app-network
+    volumes:
+      - ./src:/app/src
+
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:4.4.6
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: lalkaxz
+      MONGO_INITDB_ROOT_PASSWORD: 34bAQjfC8YQ9uGWx
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
