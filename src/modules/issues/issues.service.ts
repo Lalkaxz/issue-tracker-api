@@ -27,6 +27,7 @@ export class IssuesService {
     }});
 
     this.issuesGateway.emitIssueCreated(issue);
+    await this.cacheManager.del('issues');
 
     return issue;
   }
@@ -80,6 +81,7 @@ export class IssuesService {
     });
 
     this.issuesGateway.emitIssueUpdated(updatedIssue);
+    await this.cacheManager.del('issues');
 
     return updatedIssue;
   }
@@ -101,6 +103,7 @@ export class IssuesService {
     });
 
     this.issuesGateway.emitIssueDeleted(deletedIssue);
+    await this.cacheManager.del('issues');
 
     return { message: 'Issue deleted successfully' };
     

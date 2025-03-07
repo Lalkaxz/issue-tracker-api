@@ -27,6 +27,7 @@ export class CommentsService {
     }});
 
     this.commentsGateway.emitCommentCreated(comment);
+    await this.cacheManager.del('comments');
 
     return comment;
   }
@@ -78,6 +79,7 @@ export class CommentsService {
     });
 
     this.commentsGateway.emitCommentUpdated(updatedComment);
+    await this.cacheManager.del('comments');
 
     return updatedComment;
   }
@@ -99,6 +101,7 @@ export class CommentsService {
     });
 
     this.commentsGateway.emitCommentDeleted(deletedComment);
+    await this.cacheManager.del('comments');
 
     return { message: 'Issue comment deleted successfully' };
   }

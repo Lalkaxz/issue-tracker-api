@@ -44,13 +44,14 @@ export class ProjectsService {
       }
     });
     this.projectGateway.emitProjectCreated(project);
+    await this.cacheManager.del('projects');
 
     return project;
   }
 
   // Return projects array. Supports limit parameter.
   async findAll(limit?: number): Promise<Project[]> {
-    const cachedProjects = await this.cacheManager.get<Project[]>('projects')
+    const cachedProjects = await this.cacheManager.get<Project[]>('projects');
     if (cachedProjects) {
       return cachedProjects;
     }
@@ -90,6 +91,7 @@ export class ProjectsService {
       data: updateProjectDto
     })
     this.projectGateway.emitProjectUpdated(updatedProject);
+    await this.cacheManager.del('projects');
 
     return updatedProject;
   }
@@ -108,6 +110,7 @@ export class ProjectsService {
       }
     });
     this.projectGateway.emitProjectDeleted(deletedProject);
+    await this.cacheManager.del('projects');
 
     return deletedProject;
   }
