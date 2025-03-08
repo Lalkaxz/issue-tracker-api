@@ -1,10 +1,10 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client';
 
-import { authorSelectOptions } from '../users/users.query'
+import { authorSelectOptions } from '../users/users.query';
 
 export const issuesIncludeOptions: Prisma.IssueInclude = {
-	comments: true,
-	author: {
-		select: authorSelectOptions
-	}
-}
+  comments: true,
+  author: {
+    select: authorSelectOptions
+  }
+};

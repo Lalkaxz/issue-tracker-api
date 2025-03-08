@@ -1,6 +1,6 @@
-import { OrderByDirection } from 'src/common/enums/order-by.enum'
+import { OrderByDirection } from 'src/common/enums/order-by.enum';
 
 export type OrderByDto = {
-	field: string
-	direction: OrderByDirection
-}
+  field: string;
+  direction: OrderByDirection;
+};
