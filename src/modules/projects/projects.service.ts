@@ -69,11 +69,13 @@ export class ProjectsService {
 
   // Return projects array. Supports limit parameter.
   async findAll(limit?: number): Promise<Project[]> {
-    const cachedProjects = await this.cacheManager.get<Project[]>('projects');
-    if (cachedProjects) {
-      return cachedProjects;
+    // If request has no limit parameter, check and return cache.
+    if (!limit) {
+      const cachedProjects = await this.cacheManager.get<Project[]>('projects');
+      if (cachedProjects) {
+        return cachedProjects;
+      }
     }
-
     const projects = await this.prismaService.project.findMany({
       take: limit
     });
@@ -117,6 +119,7 @@ export class ProjectsService {
     return updatedProject;
   }
 
+  // Delete project. Only for author.
   async delete(project: ProjectEntity, user: UserEntity): Promise<Project> {
     if (project.ownerId !== user.id) {
       throw new ForbiddenException('Only author can delete project');

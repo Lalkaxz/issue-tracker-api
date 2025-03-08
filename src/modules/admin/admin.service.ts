@@ -79,7 +79,7 @@ export class AdminService {
     });
   }
 
-  // Delete user document in database by id. Return boolean value.
+  // Delete user after validating the password. Return boolean value.
   async deleteUser(id: string, user: UserEntity, deleteUserDto: DeleteUserDto) {
     const match = await validatePasswords(
       deleteUserDto.password,

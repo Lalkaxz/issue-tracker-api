@@ -48,11 +48,13 @@ export class CommentsService {
 
   // Return array of issue comments. Supports limit items.
   async findAll(issueId: string, limit?: number): Promise<CommentDto[]> {
-    const cachedComments = await this.cacheManager.get<Comment[]>('comments');
-    if (cachedComments) {
-      return cachedComments;
+    // If request has no limit parameter, check and return cache.
+    if (!limit) {
+      const cachedComments = await this.cacheManager.get<Comment[]>('comments');
+      if (cachedComments) {
+        return cachedComments;
+      }
     }
-
     const comments = await this.prismaService.comment.findMany({
       where: { issueId },
       take: limit

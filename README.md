@@ -20,7 +20,7 @@ Issue Tracker API is a RESTful API designed to manage and track issues efficient
 - **JWT** - Authentication
 - **WebSocket**  - Real-time updates
 - **nestjs-pino** - Logging
-- **@nestjs/config** - Configuration management
+- **nestjs/config** - Configuration management
 
 ## Installation
 
@@ -86,7 +86,7 @@ This API uses JWT authentication.
 ### OpenAPI Documentation
 Once the application is running, API documentation is available at:
 ```
-http://localhost:3000/api
+http://localhost:3000/api/docs
 ```
 
 ### Authentication

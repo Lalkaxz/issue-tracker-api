@@ -64,10 +64,10 @@ export class CommentsController {
     return this.commentsService.create(createCommentDto, issue, user);
   }
 
-  @ApiOperation({ summary: 'Return all issues comments' })
+  @ApiOperation({ summary: 'Return all issue comments' })
   @ApiOkResponse({
     type: [CommentDto],
-    description: 'Return issues comments array'
+    description: 'Return issue comments array'
   })
   @ApiParam({ name: 'issueId', type: String, description: 'Issue id' })
   @ApiQuery({ name: 'limit', type: Number, required: false })

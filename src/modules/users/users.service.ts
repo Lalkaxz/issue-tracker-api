@@ -1,4 +1,7 @@
-import { UpdateUserProfileResponseDto, usersProfileSelectOptions } from '@app/contract';
+import {
+  UpdateUserProfileResponseDto,
+  usersProfileSelectOptions
+} from '@app/contract';
 import {
   Injectable,
   InternalServerErrorException,
@@ -40,7 +43,10 @@ export class UsersService {
   }
 
   // Update user display name in database document.
-  async updateUserDisplayName(nameDto: UpdateDisplayNameDto, user: UserEntity): Promise<UpdateUserProfileResponseDto> {
+  async updateUserDisplayName(
+    nameDto: UpdateDisplayNameDto,
+    user: UserEntity
+  ): Promise<UpdateUserProfileResponseDto> {
     const userData = await this.prismaService.user.update({
       where: { name: user.name },
       data: { displayName: nameDto.displayName }

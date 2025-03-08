@@ -48,11 +48,13 @@ export class IssuesService {
 
   // Return array of issues. Supports limit items.
   async findAll(projectId: string, limit?: number): Promise<Issue[]> {
-    const cachedIssues = await this.cacheManager.get<Issue[]>('issues');
-    if (cachedIssues) {
-      return cachedIssues;
+    // If request has no limit parameter, check and return cache.
+    if (!limit) {
+      const cachedIssues = await this.cacheManager.get<Issue[]>('issues');
+      if (cachedIssues) {
+        return cachedIssues;
+      }
     }
-
     const issues = await this.prismaService.issue.findMany({
       where: { projectId },
       take: limit
