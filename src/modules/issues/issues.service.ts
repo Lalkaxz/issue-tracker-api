@@ -21,7 +21,7 @@ export class IssuesService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly issuesGateway: IssuesGateway,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
   ) {}
 
   // Create new issue document in database and return it.

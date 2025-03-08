@@ -24,33 +24,26 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
 
 @Module({
   imports: [
-    PrismaModule,
-    IssuesModule,
-    UsersModule,
-    AuthModule,
-    AdminModule,
-    WebsocketModule,
-    ProjectsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: IS_DEV_ENV ? [configuration] : undefined,
+      ignoreEnvFile: !IS_DEV_ENV
+    }),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: optionsFactory
     }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: IS_DEV_ENV ? [configuration] : undefined,
-      ignoreEnvFile: !IS_DEV_ENV
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: throttlerFactory
     }),
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: cacheFactory
-    }),
-    ThrottlerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: throttlerFactory
     }),
     JwtModule.registerAsync({
       global: true,
@@ -59,7 +52,14 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.getOrThrow<string>('JWT_SECRET')
       })
-    })
+    }),
+    PrismaModule,
+    ProjectsModule,
+    IssuesModule,
+    AuthModule,
+    UsersModule,
+    AdminModule,
+    WebsocketModule
   ],
   exports: [JwtModule],
   controllers: [CoreController],

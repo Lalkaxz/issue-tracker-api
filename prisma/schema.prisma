@@ -69,5 +69,5 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = env("MONGO_URL")
+  url      = env("MONGO_URI")
 }

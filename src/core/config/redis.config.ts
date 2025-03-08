@@ -1,17 +1,16 @@
+import KeyvRedis from '@keyv/redis';
 import { CacheOptions } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
 import { seconds } from '@nestjs/throttler';
-import { redisStore } from 'cache-manager-redis-yet';
+import Keyv from 'keyv';
 
 export const cacheFactory = async (
   config: ConfigService
 ): Promise<CacheOptions> => {
-  const store = await redisStore({
+  const store = new Keyv({
+    store: new KeyvRedis(config.getOrThrow<string>('REDIS_URI')),
     ttl: seconds(config.getOrThrow<number>('REDIS_TTL')),
-    socket: {
-      host: config.getOrThrow<string>('REDIS_HOST'),
-      port: config.getOrThrow<number>('REDIS_PORT')
-    }
+    namespace: config.getOrThrow<string>('REDIS_NAMESPACE')
   });
 
   const options: CacheOptions = {
