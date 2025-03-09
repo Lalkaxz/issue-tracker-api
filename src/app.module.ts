@@ -7,7 +7,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import configuration from 'src/core/config/configuration';
 import { optionsFactory } from 'src/core/config/logger.config';
-import { exceptionFilter } from 'src/core/logger/http-exception.filter';
+import { httpExceptionFilter } from 'src/core/logger/http-exception.filter';
 import { AdminModule } from 'src/modules/admin/admin.module';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { UsersModule } from 'src/modules/users/users.module';
@@ -17,6 +17,8 @@ import { IS_DEV_ENV } from './common/utils/is-dev.util';
 import { cacheFactory } from './core/config/redis.config';
 import { throttlerFactory } from './core/config/throttler.config';
 import { CoreController } from './core/core.controller';
+import { CoreService } from './core/core.service';
+import { exceptionFilter } from './core/logger/exception.filter';
 import { PrismaModule } from './core/prisma/prisma.module';
 import { IssuesModule } from './modules/issues/issues.module';
 import { ProjectsModule } from './modules/projects/projects.module';
@@ -65,10 +67,12 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
   controllers: [CoreController],
   providers: [
     exceptionFilter,
+    httpExceptionFilter,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
-    }
+    },
+    CoreService
   ]
 })
 export class AppModule implements NestModule {

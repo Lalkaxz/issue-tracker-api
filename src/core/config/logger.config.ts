@@ -28,6 +28,7 @@ export const httpConfiguration: Options = {
         }
       },
       {
+        level: 'info',
         target: 'pino-pretty',
         options: {
           colorize: true,

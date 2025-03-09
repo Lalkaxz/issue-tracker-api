@@ -26,7 +26,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
     const pid = process.pid;
     const statusCode = exception.getStatus();
 
-    this.logger.error(
+    this.logger.info(
       `[Nest] ${pid}     LOG ${ip} {${url}, ${method}} ${statusCode} - ${message}`
     );
 
@@ -42,7 +42,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
   }
 }
 
-export const exceptionFilter = {
+export const httpExceptionFilter = {
   provide: APP_FILTER,
   useClass: HttpExceptionFilter
 };
