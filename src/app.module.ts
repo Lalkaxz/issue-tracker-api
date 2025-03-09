@@ -4,9 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { LoggerModule } from 'nestjs-pino';
+import { WinstonModule } from 'nest-winston';
 import configuration from 'src/core/config/configuration';
-import { optionsFactory } from 'src/core/config/logger.config';
+import { winstonFactory } from 'src/core/config/logger.config';
 import { httpExceptionFilter } from 'src/core/logger/http-exception.filter';
 import { AdminModule } from 'src/modules/admin/admin.module';
 import { AuthModule } from 'src/modules/auth/auth.module';
@@ -31,10 +31,10 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
       load: IS_DEV_ENV ? [configuration] : undefined,
       ignoreEnvFile: !IS_DEV_ENV
     }),
-    LoggerModule.forRootAsync({
+    WinstonModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: optionsFactory
+      useFactory: winstonFactory
     }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],

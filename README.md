@@ -19,7 +19,7 @@ Issue Tracker API is a RESTful API designed to manage and track issues efficient
 - **Redis** - Caching
 - **JWT** - Authentication
 - **WebSocket**  - Real-time updates
-- **nestjs-pino** - Logging
+- **nestjs-winston** - Logging
 - **nestjs/config** - Configuration management
 
 ## Installation

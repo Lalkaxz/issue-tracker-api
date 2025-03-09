@@ -2,15 +2,18 @@ import {
   ArgumentsHost,
   Catch,
   HttpException,
-  HttpStatus
+  HttpStatus,
+  Logger
 } from '@nestjs/common';
 import { APP_FILTER, BaseExceptionFilter } from '@nestjs/core';
 import { Request, Response } from 'express';
-import { PinoLogger } from 'nestjs-pino';
+
+import { LoggingInterceptor } from './logging.interceptor';
 
 @Catch(HttpException)
 export class HttpExceptionFilter extends BaseExceptionFilter {
-  constructor(private readonly logger: PinoLogger) {
+  private readonly logger = new Logger(LoggingInterceptor.name);
+  constructor() {
     super();
   }
 
@@ -26,7 +29,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
     const pid = process.pid;
     const statusCode = exception.getStatus();
 
-    this.logger.info(
+    this.logger.error(
       `[Nest] ${pid}     LOG ${ip} {${url}, ${method}} ${statusCode} - ${message}`
     );
 

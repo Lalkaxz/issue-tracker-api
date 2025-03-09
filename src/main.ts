@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { PinoLogger } from 'nestjs-pino';
 
 import { AppModule } from './app.module';
 import { LoggingInterceptor } from './core/logger/logging.interceptor';
@@ -26,8 +25,6 @@ async function bootstrap() {
   });
   const config = app.get(ConfigService);
 
-  const logger = await app.resolve(PinoLogger);
-
   const port = config.getOrThrow<string>('PORT');
   const host = config.getOrThrow<string>('HOST');
 
@@ -37,7 +34,7 @@ async function bootstrap() {
 
   app.enableCors({ origin: config.getOrThrow<string>('ALLOWED_ORIGIN') });
 
-  app.useGlobalInterceptors(new LoggingInterceptor(logger));
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(port, () =>

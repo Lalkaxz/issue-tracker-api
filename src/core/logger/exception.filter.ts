@@ -1,19 +1,27 @@
-import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  HttpException,
+  Inject,
+  LoggerService
+} from '@nestjs/common';
 import { APP_FILTER, BaseExceptionFilter } from '@nestjs/core';
-import { PinoLogger } from 'nestjs-pino';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
-  constructor(private readonly logger: PinoLogger) {
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
+  ) {
     super();
   }
 
-  catch(exception: any, host: ArgumentsHost) {
+  async catch(exception: any, host: ArgumentsHost) {
     if (exception instanceof HttpException) {
       return;
     }
 
-    this.logger.error(exception);
+    await this.logger.error(exception);
 
     super.catch(exception, host);
   }
